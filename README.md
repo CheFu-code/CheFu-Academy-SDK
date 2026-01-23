@@ -1,55 +1,129 @@
 # CheFu Academy SDK
 
-A TypeScript SDK for interacting with the CheFu Academy platform. This SDK provides authentication, client management, and course-related functionalities for developers integrating with CheFu Academy services.
+A fully typed **TypeScript SDK** for interacting with the **CheFu Academy** platform.  
+This SDK simplifies authentication, API requests, and access to CheFu Academy resources such as courses.
 
-## Features
-- Authentication utilities
-- Client management
-- Course management
-- TypeScript support
+Designed for **Node.js** and modern JavaScript/TypeScript projects.
 
-## Installation
+---
 
-```
+## ✨ Features
+
+- 🔐 API key–based authentication
+- 📦 Centralized API client
+- 📚 Course listing & retrieval
+- 🧠 Clean, minimal SDK design
+- 🧾 Full TypeScript typings
+- 🚀 Ready for production & npm
+
+---
+
+## 📦 Installation
+
+```bash
 npm install chefu-academy-sdk
 ```
 
-## Usage
+or using yarn:
 
-Import the SDK modules as needed:
-
-```typescript
-import { authenticate } from './src/auth';
-import { Client } from './src/client';
-import { getCourses } from './src/courses';
+```bash
+yarn add chefu-academy-sdk
 ```
 
-### Example
+---
 
-```typescript
-import { authenticate } from './src/auth';
-import { Client } from './src/client';
-import { getCourses } from './src/courses';
+## 🚀 Quick Start
 
-const client = new Client({ apiKey: 'YOUR_API_KEY' });
-authenticate(client)
-  .then(() => getCourses(client))
-  .then(courses => console.log(courses));
+### Import the SDK
+
+```ts
+import { CheFuAcademy } from "chefu-academy-sdk";
 ```
 
-## Development
+### Initialize the client
 
-- Build: `npm run build`
-- Lint: `npm run lint`
-- Test: `npm test`
+```ts
+const sdk = new CheFuAcademy({
+  apiKey: "YOUR_API_KEY",
+});
+```
 
-## Project Structure
+### Fetch courses
 
-- `src/auth.ts` - Authentication logic
-- `src/client.ts` - API client
-- `src/courses.ts` - Course management
-- `src/index.ts` - SDK entry point
+```ts
+async function main() {
+  const courses = await sdk.courses.getAll();
+  console.log(courses);
+}
 
-## License
+main();
+```
 
-MIT
+---
+
+## 📚 Available APIs
+
+### Courses
+
+```ts
+sdk.courses.getAll();        // List all courses
+sdk.courses.getById(courseId); // Get a single course
+```
+
+### Authentication
+
+Authentication is handled automatically using your API key.
+
+```ts
+new CheFuAcademy({
+  apiKey: process.env.CHEFU_API_KEY,
+});
+```
+
+---
+
+## 🛠 Development
+
+### Scripts
+
+```bash
+npm run build   # Build SDK
+npm run lint    # Lint code
+npm test        # Run tests
+```
+
+### Project Structure
+
+```
+src/
+ ├─ auth.ts        # Authentication logic
+ ├─ client.ts      # HTTP client
+ ├─ courses.ts     # Course endpoints
+ ├─ index.ts       # Public SDK exports
+```
+
+---
+
+## 📄 Example Project
+
+```ts
+import { CheFuAcademy } from "chefu-academy-sdk";
+
+const sdk = new CheFuAcademy({ apiKey: "sk_live_xxx" });
+
+const courses = await sdk.courses.getAll();
+console.log(courses);
+```
+
+---
+
+## 🧪 Requirements
+
+- Node.js 18+
+- TypeScript 5+ (optional but recommended)
+
+---
+
+## 📜 License
+
+MIT License © CheFu Academy
