@@ -37,7 +37,7 @@ export class CheFuAcademyClient {
         }
 
         this.apiKey = config.apiKey;
-        this.baseURL = config.baseURL || 'https://api.chefuacademy.com/api';
+        this.baseURL = config.baseURL || 'https://chefu-academy-sdk.onrender.com/api';
 
         this.client = axios.create({
             baseURL: this.baseURL,
