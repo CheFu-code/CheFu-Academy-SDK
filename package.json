@@ -17,16 +17,18 @@
         "build": "tsup src/index.ts --dts --format esm,cjs"
     },
     "keywords": [],
-    "author": "",
+    "author": "Kurisani Maluleke",
     "license": "MIT",
-    "description": "",
+    "description": "A TypeScript SDK for the CheFu Academy platform",
     "devDependencies": {
         "@types/node": "^25.0.10",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3"
     },
     "dependencies": {
+        "@types/validator": "^13.15.10",
         "axios": "^1.13.2",
-        "chefu-academy-sdk": "file:chefu-academy-sdk-1.0.3.tgz"
+        "chefu-academy-sdk": "^1.0.4",
+        "validator": "^13.15.26"
     }
 }

@@ -7,18 +7,20 @@ Designed for **Node.js** and modern JavaScript/TypeScript projects.
 
 ---
 
-## ✨ Features
 
-- 🔐 API key–based authentication
-- 📦 Centralized API client
-- 📚 Course listing & retrieval
-- 🧠 Clean, minimal SDK design
-- 🧾 Full TypeScript typings
-- 🚀 Ready for production & npm
+## Features
+
+- API key–based authentication
+- Centralized API client
+- Course listing & retrieval
+- Clean, minimal SDK design
+- Full TypeScript typings
+- Ready for production & npm
 
 ---
 
-## 📦 Installation
+
+## Installation
 
 ```bash
 npm install chefu-academy-sdk
@@ -32,7 +34,8 @@ yarn add chefu-academy-sdk
 
 ---
 
-## 🚀 Quick Start
+
+## Quick Start
 
 ### Import the SDK
 
@@ -61,7 +64,8 @@ main();
 
 ---
 
-## 📚 Available APIs
+
+## Available APIs
 
 ### Courses
 
@@ -82,7 +86,8 @@ new CheFuAcademy({
 
 ---
 
-## 🛠 Development
+
+## Development
 
 ### Scripts
 
@@ -104,7 +109,8 @@ src/
 
 ---
 
-## 📄 Example Project
+
+## Example Project
 
 ```ts
 import { CheFuAcademy } from "chefu-academy-sdk";
@@ -117,13 +123,15 @@ console.log(courses);
 
 ---
 
-## 🧪 Requirements
+
+## Requirements
 
 - Node.js 18+
 - TypeScript 5+ (optional but recommended)
 
 ---
 
-## 📜 License
+
+## License
 
 MIT License © CheFu Academy
