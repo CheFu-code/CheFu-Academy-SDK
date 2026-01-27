@@ -49,7 +49,6 @@ export class Courses {
             return await this.client.get<CourseListResponse>('/courses');
         } catch (error: any) {
             this.handleCourseError(error, 'fetch course');
-            throw error; // Ensure error is propagated
         }
     }
 
@@ -73,7 +72,6 @@ export class Courses {
             );
         } catch (error: any) {
             this.handleCourseError(error, 'fetch course by ID');
-            throw error; // Ensure error is propagated
         }
     }
 
