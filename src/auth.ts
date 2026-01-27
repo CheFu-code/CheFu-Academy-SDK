@@ -40,8 +40,8 @@ export class Auth {
                 422,
             );
         }
-        const sanitizedEmail = validator.trim(validator.escape(email));
-        if (!validator.isEmail(sanitizedEmail)) {
+        const trimmedEmail = validator.trim(email);
+        if (!validator.isEmail(trimmedEmail)) {
             throw new CheFuAcademyError('Invalid email format.', 422);
         }
         if (typeof password !== 'string' || password.length < 6) {
@@ -50,7 +50,7 @@ export class Auth {
         // Never log or expose passwords
         try {
             return await this.client.post<LoginResponse>('/auth/login', {
-                email: sanitizedEmail,
+                email: trimmedEmail,
                 password,
             });
         } catch (error: any) {
@@ -92,7 +92,7 @@ export class Auth {
         if (typeof password !== 'string' || password.length < 6) {
             throw new CheFuAcademyError('Password must be at least 6 characters long.', 422);
         }
-        const sanitizedFullname = validator.trim(validator.escape(fullname));
+        const sanitizedFullname = validator.trim(fullname);
         if (sanitizedFullname.length < 2) {
             throw new CheFuAcademyError('Full name must be at least 2 characters long.', 422);
         }
