@@ -123,6 +123,12 @@ export class CheFuAcademyClient {
         }
     }
 
+    private logRequest(method: string, url: string, data?: any) {
+        if (process.env.CHEFU_SDK_DEBUG === "true") {
+            console.log(`[CheFu SDK] ${method.toUpperCase()} ${url}`, data || '');
+        }
+    }
+
     /**
      * HTTP GET
      */
@@ -138,4 +144,15 @@ export class CheFuAcademyClient {
         const res = await this.client.post(path, data);
         return res.data;
     }
+
+    async put<T = any>(path: string, data?: any): Promise<T> {
+        const res = await this.client.put(path, data);
+        return res.data;
+    }
+
+    async delete<T = any>(path: string): Promise<T> {
+        const res = await this.client.delete(path);
+        return res.data;
+    }
+
 }

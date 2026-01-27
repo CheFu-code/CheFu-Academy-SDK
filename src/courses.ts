@@ -37,7 +37,7 @@ export class Courses {
         try {
             return await this.client.get<CourseListResponse>('/courses');
         } catch (error: any) {
-            this.handleCourseError(error, 'fetch courses');
+            this.handleCourseError(error, 'fetch course');
         }
     }
 
@@ -54,7 +54,7 @@ export class Courses {
 
         try {
             return await this.client.get<Course>(
-                `/courses/view/${courseId}`,
+                `/courses/${courseId}`,
             );
         } catch (error: any) {
             this.handleCourseError(error, 'fetch course');
@@ -64,41 +64,27 @@ export class Courses {
     /**
      * Centralized course error handler
      */
-    private handleCourseError(
-        error: CheFuAcademyError,
-        action: string,
-    ): never {
+    private handleCourseError(error: CheFuAcademyError | any, action: string): never {
         if (error instanceof CheFuAcademyError) {
+            const message = error.details?.message || error.message || `Failed to ${action}.`;
             switch (error.statusCode) {
                 case 401:
-                    throw new CheFuAcademyError(
-                        'Unauthorized. Please check your API key.',
-                        401,
-                    );
-
+                    throw new CheFuAcademyError(`Unauthorized: ${message}`, 401, error.details);
                 case 404:
-                    throw new CheFuAcademyError(
-                        'Course not found.',
-                        404,
-                    );
-
+                    throw new CheFuAcademyError(`Course not found: ${message}`, 404, error.details);
                 case 429:
-                    throw new CheFuAcademyError(
-                        'Rate limit exceeded while trying to ' + action + '.',
-                        429,
-                    );
-
+                    throw new CheFuAcademyError(`Rate limit exceeded while trying to ${action}: ${message}`, 429, error.details);
                 default:
-                    throw new CheFuAcademyError(
-                        `Failed to ${action}.`,
-                        error.statusCode,
-                        error.details,
-                    );
+                    throw new CheFuAcademyError(`Failed to ${action}: ${message}`, error.statusCode, error.details);
             }
         }
 
+        // For unexpected errors not wrapped by the SDK
         throw new CheFuAcademyError(
-            `Unexpected error while trying to ${action}.`,
+            `Unexpected error while trying to ${action}: ${error?.message || 'Unknown error'}`,
+            error?.statusCode,
+            error?.details
         );
     }
+
 }
