@@ -16,16 +16,16 @@ Here are recommended badges you can use in your README for CheFu Academy SDK:
 
 ### Build Status (GitHub Actions)
 
-![Build](https://github.com/<your-username>/CheFu-Academy-sdk/actions/workflows/node.js.yml/badge.svg)
+![Build](https://github.com/CheFu-code/CheFu-Academy-SDK/actions/workflows/node.js.yml/badge.svg)
 
 ### Dependabot
 
-![Dependabot](https://img.shields.io/github/dependabot/your-username/CheFu-Academy-sdk?label=dependabot)
+![Dependabot](https://img.shields.io/github/dependabot/CheFu-code/CheFu-Academy-SDK?label=dependabot)
 
 ### Open Issues
 
-![Issues](https://img.shields.io/github/issues/your-username/CheFu-Academy-sdk)
+![Issues](https://img.shields.io/github/issues/CheFu-code/CheFu-Academy-SDK)
 
 ### Downloads (npm)
 
-![Downloads](https://img.shields.io/npm/dt/chefucademy-sdk)
+![Downloads](https://img.shields.io/npm/dt/chefu-academy-sdk)
