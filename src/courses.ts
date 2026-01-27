@@ -57,7 +57,7 @@ export class Courses {
                 `/courses/${courseId}`,
             );
         } catch (error: any) {
-            this.handleCourseError(error, 'fetch course');
+            this.handleCourseError(error, 'fetch course by ID');
         }
     }
 
