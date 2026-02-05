@@ -1,4 +1,4 @@
-// CheFu-Academy-sdk/src/index.ts
+// src/index.ts
 
 import { Auth } from './auth';
 import { CheFuAcademyClient, CheFuAcademyConfig } from './client';
@@ -14,9 +14,7 @@ export class CheFuAcademy {
 
     constructor(config: CheFuAcademyConfig) {
         if (!config) {
-            throw new Error(
-                '[CheFu Academy SDK] Configuration object is required.',
-            );
+            throw new Error('[CheFu Academy SDK] Configuration object is required.');
         }
 
         this.client = new CheFuAcademyClient(config);

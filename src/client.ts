@@ -1,6 +1,10 @@
 // CheFu-Academy-sdk/src/client.ts
-
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, {
+    AxiosError,
+    AxiosInstance,
+    AxiosResponse,
+    InternalAxiosRequestConfig,
+} from 'axios';
 
 export interface CheFuAcademyConfig {
     apiKey: string;
@@ -8,14 +12,21 @@ export interface CheFuAcademyConfig {
     timeout?: number;
 }
 
+type ApiErrorBody = {
+    message?: string;
+    // add any other fields your API returns for errors
+    [key: string]: unknown;
+};
+
 /**
  * Custom SDK Error
  */
 export class CheFuAcademyError extends Error {
     statusCode?: number;
-    details?: any;
+    // keep `details` flexible, but avoid `any`
+    details?: unknown;
 
-    constructor(message: string, statusCode?: number, details?: any) {
+    constructor(message: string, statusCode?: number, details?: unknown) {
         super(message);
         this.name = 'CheFuAcademyError';
         this.statusCode = statusCode;
@@ -30,18 +41,15 @@ export class CheFuAcademyClient {
 
     constructor(config: CheFuAcademyConfig) {
         if (!config.apiKey) {
-            throw new CheFuAcademyError(
-                '[CheFu Academy SDK] API key is required',
-                401,
-            );
+            throw new CheFuAcademyError('[CheFu Academy SDK] API key is required', 401);
         }
 
         this.apiKey = config.apiKey;
-        this.baseURL = config.baseURL || 'https://chefu-academy-sdk.onrender.com/api';
+        this.baseURL = config.baseURL ?? 'https://chefu-academy-sdk.onrender.com/api';
 
         this.client = axios.create({
             baseURL: this.baseURL,
-            timeout: config.timeout || 10000, // 10s timeout
+            timeout: config.timeout ?? 10_000, // 10s timeout
             headers: {
                 Authorization: `Bearer ${this.apiKey}`,
                 'Content-Type': 'application/json',
@@ -55,104 +63,106 @@ export class CheFuAcademyClient {
      * Axios response & error interceptors
      */
     private setupInterceptors() {
+        // (Optional) If you also want to log or mutate requests later:
+        // this.client.interceptors.request.use(
+        //   (request: InternalAxiosRequestConfig) => request,
+        //   (error: AxiosError) => Promise.reject(error)
+        // );
+
         this.client.interceptors.response.use(
-            (response) => response,
-            (error: AxiosError) => {
-                throw this.handleError(error);
-            },
+            // ✅ Explicitly type `response` to fix "implicitly has an 'any' type"
+            (response: AxiosResponse) => response,
+            (error: AxiosError<ApiErrorBody>) => {
+                // Return a rejected promise to follow Axios interceptor contract
+                return Promise.reject(this.handleError(error));
+            }
         );
     }
 
     /**
      * Centralized error handler
      */
-    private handleError(error: AxiosError): CheFuAcademyError {
+    private handleError(error: AxiosError<ApiErrorBody>): CheFuAcademyError {
         // Network error (no response)
         if (!error.response) {
             return new CheFuAcademyError(
-                'Network error. Please check your internet connection.',
+                'Network error. Please check your internet connection.'
             );
         }
 
-        const { status, data } = error.response as any;
+        const { status, data } = error.response;
 
         switch (status) {
             case 400:
-                return new CheFuAcademyError(
-                    data?.message || 'Bad request.',
-                    400,
-                    data,
-                );
-
+                return new CheFuAcademyError(data?.message ?? 'Bad request.', 400, data);
             case 401:
-                return new CheFuAcademyError(
-                    'Invalid or expired API key.',
-                    401,
-                );
-
+                return new CheFuAcademyError('Invalid or expired API key.', 401);
             case 403:
                 return new CheFuAcademyError(
                     'You do not have permission to perform this action.',
-                    403,
+                    403
                 );
-
             case 404:
-                return new CheFuAcademyError(
-                    'Requested resource not found.',
-                    404,
-                );
-
+                return new CheFuAcademyError('Requested resource not found.', 404);
             case 429:
                 return new CheFuAcademyError(
                     'Rate limit exceeded. Please slow down your requests.',
-                    429,
+                    429
                 );
-
             case 500:
                 return new CheFuAcademyError(
                     'CheFu Academy server error. Please try again later.',
-                    500,
+                    500
                 );
-
             default:
                 return new CheFuAcademyError(
-                    data?.message || 'Unexpected error occurred.',
+                    data?.message ?? 'Unexpected error occurred.',
                     status,
-                    data,
+                    data
                 );
         }
     }
 
-    private logRequest(method: string, url: string, data?: any) {
-        if (process.env.CHEFU_SDK_DEBUG === "true") {
-            console.log(`[CheFu SDK] ${method.toUpperCase()} ${url}`, data || '');
+    private logRequest(method: string, url: string, data?: unknown) {
+        if (process.env.CHEFU_SDK_DEBUG === 'true') {
+            // eslint-disable-next-line no-console
+            console.log(`[CheFu SDK] ${method.toUpperCase()} ${url}`, data ?? '');
         }
     }
 
     /**
      * HTTP GET
      */
-    async get<T = any>(path: string): Promise<T> {
-        const res = await this.client.get(path);
+    async get<T = unknown>(path: string): Promise<T> {
+        this.logRequest('get', path);
+        const res: AxiosResponse<T> = await this.client.get<T>(path);
         return res.data;
     }
 
     /**
      * HTTP POST
      */
-    async post<T = any>(path: string, data?: any): Promise<T> {
-        const res = await this.client.post(path, data);
+    async post<T = unknown>(path: string, data?: unknown): Promise<T> {
+        this.logRequest('post', path, data);
+        const res: AxiosResponse<T> = await this.client.post<T>(path, data);
         return res.data;
     }
 
-    async put<T = any>(path: string, data?: any): Promise<T> {
-        const res = await this.client.put(path, data);
+    /**
+     * HTTP PUT
+     */
+    async put<T = unknown>(path: string, data?: unknown): Promise<T> {
+        this.logRequest('put', path, data);
+        const res: AxiosResponse<T> = await this.client.put<T>(path, data);
         return res.data;
     }
 
-    async delete<T = any>(path: string): Promise<T> {
-        const res = await this.client.delete(path);
+    /**
+     * HTTP DELETE
+     */
+    async delete<T = unknown>(path: string): Promise<T> {
+        this.logRequest('delete', path);
+        const res: AxiosResponse<T> = await this.client.delete<T>(path);
         return res.data;
     }
-
 }
