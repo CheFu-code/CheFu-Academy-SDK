@@ -1,7 +1,19 @@
 {
     "name": "chefu-academy-sdk",
     "version": "1.0.4",
+    "description": "A TypeScript SDK for the CheFu Academy platform",
+    "author": "Kurisani Maluleke",
+    "license": "MIT",
+    "homepage": "https://github.com/CheFu-code/CheFu-Academy-SDK#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CheFu-code/CheFu-Academy-SDK.git"
+    },
+    "bugs": {
+        "url": "https://github.com/CheFu-code/CheFu-Academy-SDK/issues"
+    },
     "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
@@ -14,21 +26,29 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsup src/index.ts --dts --format esm,cjs"
+        "build": "tsup src/index.ts --dts --format esm,cjs --clean",
+        "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
+        "prepare": "npm run build"
     },
-    "keywords": [],
-    "author": "Kurisani Maluleke",
-    "license": "MIT",
-    "description": "A TypeScript SDK for the CheFu Academy platform",
+    "keywords": [
+        "chefu",
+        "academy",
+        "sdk",
+        "typescript",
+        "api-client",
+        "education"
+    ],
     "devDependencies": {
-        "@types/node": "^25.0.10",
+        "typescript": "^5.9.3",
         "tsup": "^8.5.1",
-        "typescript": "^5.9.3"
+        "@types/node": "^25.0.10"
     },
     "dependencies": {
-        "@types/validator": "^13.15.10",
         "axios": "^1.13.2",
-        "chefu-academy-sdk": "^1.0.4",
-        "validator": "^13.15.26"
+        "validator": "^13.15.26",
+        "@types/validator": "^13.15.10"
+    },
+    "engines": {
+        "node": ">=18"
     }
 }
