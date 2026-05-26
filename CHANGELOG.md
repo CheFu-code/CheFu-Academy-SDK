@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2026-05-26
+
+### Changed
+
+- Pointed the SDK default API base URL at the unified CheFu Inc backend.
+- Improved error parsing for NestJS API responses.
+
 ## [1.0.2] - 2026-01-23
 
 ### Added

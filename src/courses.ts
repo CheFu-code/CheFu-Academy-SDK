@@ -114,7 +114,7 @@ export class Courses {
      */
     private handleCourseError(error: CheFuAcademyError | any, action: string): never {
         if (error instanceof CheFuAcademyError) {
-            const message = error?.details?.message ?? error?.message ?? `Failed to ${action}.`;
+            const message = this.errorDetailMessage(error.details) ?? error.message ?? `Failed to ${action}.`;
             const statusCode = error?.statusCode ?? 500;
             const details = error?.details ?? {};
             switch (statusCode) {
@@ -135,5 +135,15 @@ export class Courses {
             error?.statusCode ?? 500,
             error?.details ?? {}
         );
+    }
+
+    private errorDetailMessage(details: unknown) {
+        if (!details || typeof details !== 'object' || !('message' in details)) {
+            return undefined;
+        }
+
+        const message = (details as { message?: unknown }).message;
+        if (Array.isArray(message)) return message.map(String).join(' ');
+        return typeof message === 'string' ? message : undefined;
     }
 }

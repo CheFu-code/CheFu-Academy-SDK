@@ -51,6 +51,10 @@ const sdk = new CheFuAcademy({
 });
 ```
 
+By default, the SDK talks to the unified CheFu Inc API at
+`https://api.chefuinc.com/api`. For local development or private deployments,
+pass `baseURL` when creating the client.
+
 ### Fetch courses
 
 ```ts

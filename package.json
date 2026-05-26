@@ -1,6 +1,6 @@
 {
     "name": "chefu-academy-sdk",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "A TypeScript SDK for the CheFu Academy platform",
     "author": "Kurisani Maluleke",
     "license": "MIT",
@@ -17,9 +17,9 @@
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
+            "require": "./dist/index.js"
         }
     },
     "files": [

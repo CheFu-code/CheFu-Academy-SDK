@@ -13,10 +13,12 @@ export interface CheFuAcademyConfig {
 }
 
 type ApiErrorBody = {
-    message?: string;
-    // add any other fields your API returns for errors
+    message?: string | string[];
+    error?: string;
     [key: string]: unknown;
 };
+
+const DEFAULT_BASE_URL = 'https://api.chefuinc.com/api';
 
 /**
  * Custom SDK Error
@@ -45,7 +47,7 @@ export class CheFuAcademyClient {
         }
 
         this.apiKey = config.apiKey;
-        this.baseURL = config.baseURL ?? 'https://chefu-academy-sdk.onrender.com/api';
+        this.baseURL = config.baseURL ?? DEFAULT_BASE_URL;
 
         this.client = axios.create({
             baseURL: this.baseURL,
@@ -94,7 +96,11 @@ export class CheFuAcademyClient {
 
         switch (status) {
             case 400:
-                return new CheFuAcademyError(data?.message ?? 'Bad request.', 400, data);
+                return new CheFuAcademyError(
+                    this.errorMessage(data) ?? 'Bad request.',
+                    400,
+                    data
+                );
             case 401:
                 return new CheFuAcademyError('Invalid or expired API key.', 401);
             case 403:
@@ -116,11 +122,18 @@ export class CheFuAcademyClient {
                 );
             default:
                 return new CheFuAcademyError(
-                    data?.message ?? 'Unexpected error occurred.',
+                    this.errorMessage(data) ?? 'Unexpected error occurred.',
                     status,
                     data
                 );
         }
+    }
+
+    private errorMessage(data?: ApiErrorBody) {
+        if (!data) return undefined;
+        if (Array.isArray(data.message)) return data.message.join(' ');
+        if (data.message) return data.message;
+        return data.error;
     }
 
     private logRequest(method: string, url: string, data?: unknown) {
