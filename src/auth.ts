@@ -6,6 +6,10 @@ import validator from 'validator';
 
 export interface LoginResponse {
     token: string;
+    idToken?: string;
+    refreshToken?: string;
+    expiresIn?: string;
+    customToken?: string;
     user: {
         id: string;
         email: string;
@@ -68,10 +72,12 @@ export class Auth {
         }
         // Never log or expose passwords
         try {
-            return await this.client.post<LoginResponse>('/auth/login', {
+            const session = await this.client.post<LoginResponse>('/auth/login', {
                 email: trimmedEmail,
                 password,
             });
+            this.client.setAuthToken(session.idToken || session.token);
+            return session;
         } catch (error: any) {
             this.handleAuthError(error, 'login');
         }

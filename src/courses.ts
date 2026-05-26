@@ -1,149 +1,291 @@
-// CheFu-Academy-sdk/src/courses.ts
-
 import { CheFuAcademyClient, CheFuAcademyError } from './client';
 
-
-/**
- * Represents a course in CheFu Academy.
- */
-export interface Course {
-    id: string;
-    title: string;
-    description: string;
-    bannerImage?: string;
-    category?: string;
-    createdAt: string;
-    updatedAt: string;
+export interface Flashcard {
+    front?: string;
+    back?: string;
+    [key: string]: unknown;
 }
 
-/**
- * Response for a list of courses.
- */
+export interface ChapterContentItem {
+    topic?: string;
+    explain?: string;
+    code?: string;
+    example?: string;
+    [key: string]: unknown;
+}
+
+export interface Chapter {
+    chapterName?: string;
+    content?: ChapterContentItem[];
+    [key: string]: unknown;
+}
+
+export interface QA {
+    question?: string;
+    answer?: string;
+    [key: string]: unknown;
+}
+
+export interface Quiz {
+    question?: string;
+    options?: string[];
+    correctAns?: string;
+    [key: string]: unknown;
+}
+
+export interface Course {
+    id: string;
+    courseTitle?: string;
+    title?: string;
+    description?: string;
+    banner_image?: string;
+    bannerImage?: string;
+    category?: string;
+    chapters?: Chapter[];
+    quiz?: Quiz[];
+    flashcards?: Flashcard[];
+    qa?: QA[];
+    averageRating?: number;
+    reviewCount?: number;
+    [key: string]: unknown;
+}
+
+export interface CourseListOptions {
+    query?: string;
+    category?: string;
+    limit?: number;
+}
+
+export interface FeaturedCourseOptions {
+    limit?: number;
+}
+
 export interface CourseListResponse {
     courses: Course[];
     total: number;
 }
 
-/**
- * Courses API wrapper for CheFu Academy.
- * Provides methods to interact with course resources.
- */
+type CategoriesResponse = {
+    categories: string[];
+    total: number;
+};
+
+type ChaptersResponse = {
+    courseId: string;
+    chapters: Chapter[];
+};
+
+type ChapterResponse = {
+    courseId: string;
+    chapterIndex: number;
+    chapter: Chapter;
+};
+
+type LessonsResponse = {
+    courseId: string;
+    chapterIndex: number;
+    lessons: ChapterContentItem[];
+};
+
+type QuizResponse = {
+    courseId: string;
+    quiz: Quiz[];
+};
+
+type FlashcardsResponse = {
+    courseId: string;
+    flashcards: Flashcard[];
+};
+
+type QAResponse = {
+    courseId: string;
+    qa: QA[];
+};
+
 export class Courses {
     private client: CheFuAcademyClient;
 
-    /**
-     * Creates a new Courses API wrapper.
-     * @param client CheFuAcademyClient instance
-     */
     constructor(client: CheFuAcademyClient) {
         this.client = client;
     }
 
-    /**
-     * Get all courses.
-     * @returns A promise resolving to a list of courses and total count.
-     * @throws CheFuAcademyError on failure.
-     */
-    async getAll(): Promise<CourseListResponse> {
+    async getAll(options: CourseListOptions = {}): Promise<CourseListResponse> {
+        return this.getCourseList('/courses', options, 'fetch courses');
+    }
+
+    async search(options: CourseListOptions): Promise<CourseListResponse> {
+        return this.getCourseList('/courses/search', options, 'search courses');
+    }
+
+    async getFeatured(
+        options: FeaturedCourseOptions = {},
+    ): Promise<CourseListResponse> {
+        return this.getCourseList(
+            '/courses/featured',
+            options,
+            'fetch featured courses',
+        );
+    }
+
+    async getCategories(): Promise<string[]> {
         try {
-            return await this.client.get<CourseListResponse>('/courses');
-        } catch (error: any) {
-            this.handleCourseError(error, 'fetch course');
+            const response = await this.client.get<CategoriesResponse>(
+                '/courses/categories',
+            );
+            return response.categories;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course categories');
         }
     }
 
-    /**
-     * Get a single course by ID.
-     * @param courseId The ID of the course to fetch.
-     * @returns A promise resolving to the course.
-     * @throws CheFuAcademyError if courseId is missing or on failure.
-     */
     async getById(courseId: string): Promise<Course> {
-        if (!courseId) {
-            throw new CheFuAcademyError(
-                'Course ID is required.',
-                422,
-            );
-        }
+        this.assertCourseId(courseId);
 
         try {
             return await this.client.get<Course>(
-                `/courses/${courseId}`,
+                `/courses/${encodeURIComponent(courseId)}`,
             );
-        } catch (error: any) {
+        } catch (error: unknown) {
             this.handleCourseError(error, 'fetch course by ID');
         }
     }
 
-    /**
-     * Create a new course (stub).
-     * @param course Partial course data.
-     * @returns Promise resolving to the created course.
-     */
-    async create(course: Partial<Course>): Promise<Course> {
-        // Implementation placeholder
-        throw new CheFuAcademyError('Not implemented', 501);
+    async getChapters(courseId: string): Promise<Chapter[]> {
+        this.assertCourseId(courseId);
+
+        try {
+            const response = await this.client.get<ChaptersResponse>(
+                `/courses/${encodeURIComponent(courseId)}/chapters`,
+            );
+            return response.chapters;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course chapters');
+        }
     }
 
-    /**
-     * Update an existing course (stub).
-     * @param courseId The ID of the course to update.
-     * @param updates Partial course data to update.
-     * @returns Promise resolving to the updated course.
-     */
-    async update(courseId: string, updates: Partial<Course>): Promise<Course> {
-        // Implementation placeholder
-        throw new CheFuAcademyError('Not implemented', 501);
+    async getChapter(
+        courseId: string,
+        chapterIndex: number,
+    ): Promise<Chapter> {
+        this.assertCourseId(courseId);
+        this.assertIndex(chapterIndex, 'Chapter');
+
+        try {
+            const response = await this.client.get<ChapterResponse>(
+                `/courses/${encodeURIComponent(courseId)}/chapters/${chapterIndex}`,
+            );
+            return response.chapter;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course chapter');
+        }
     }
 
-    /**
-     * Delete a course (stub).
-     * @param courseId The ID of the course to delete.
-     * @returns Promise resolving to void.
-     */
-    async delete(courseId: string): Promise<void> {
-        // Implementation placeholder
-        throw new CheFuAcademyError('Not implemented', 501);
+    async getLessons(
+        courseId: string,
+        chapterIndex: number,
+    ): Promise<ChapterContentItem[]> {
+        this.assertCourseId(courseId);
+        this.assertIndex(chapterIndex, 'Chapter');
+
+        try {
+            const response = await this.client.get<LessonsResponse>(
+                `/courses/${encodeURIComponent(courseId)}/chapters/${chapterIndex}/lessons`,
+            );
+            return response.lessons;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course lessons');
+        }
     }
 
-    /**
-     * Centralized course error handler.
-     * @param error The error thrown.
-     * @param action The action being performed.
-     * @throws CheFuAcademyError
-     */
-    private handleCourseError(error: CheFuAcademyError | any, action: string): never {
+    async getQuiz(courseId: string): Promise<Quiz[]> {
+        this.assertCourseId(courseId);
+
+        try {
+            const response = await this.client.get<QuizResponse>(
+                `/courses/${encodeURIComponent(courseId)}/quiz`,
+            );
+            return response.quiz;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course quiz');
+        }
+    }
+
+    async getFlashcards(courseId: string): Promise<Flashcard[]> {
+        this.assertCourseId(courseId);
+
+        try {
+            const response = await this.client.get<FlashcardsResponse>(
+                `/courses/${encodeURIComponent(courseId)}/flashcards`,
+            );
+            return response.flashcards;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course flashcards');
+        }
+    }
+
+    async getQA(courseId: string): Promise<QA[]> {
+        this.assertCourseId(courseId);
+
+        try {
+            const response = await this.client.get<QAResponse>(
+                `/courses/${encodeURIComponent(courseId)}/qa`,
+            );
+            return response.qa;
+        } catch (error: unknown) {
+            this.handleCourseError(error, 'fetch course Q&A');
+        }
+    }
+
+    private async getCourseList(
+        path: string,
+        options: CourseListOptions | FeaturedCourseOptions,
+        action: string,
+    ) {
+        try {
+            return await this.client.get<CourseListResponse>(
+                this.withQuery(path, options),
+            );
+        } catch (error: unknown) {
+            this.handleCourseError(error, action);
+        }
+    }
+
+    private withQuery(
+        path: string,
+        options: CourseListOptions | FeaturedCourseOptions = {},
+    ) {
+        const params = new URLSearchParams();
+
+        Object.entries(options).forEach(([key, value]) => {
+            if (value === undefined || value === null || value === '') return;
+            params.set(key, String(value));
+        });
+
+        const query = params.toString();
+        return query ? `${path}?${query}` : path;
+    }
+
+    private assertCourseId(courseId: string) {
+        if (!courseId) {
+            throw new CheFuAcademyError('Course ID is required.', 422);
+        }
+    }
+
+    private assertIndex(index: number, label: string) {
+        if (!Number.isInteger(index) || index < 0) {
+            throw new CheFuAcademyError(`${label} index must be 0 or greater.`, 422);
+        }
+    }
+
+    private handleCourseError(error: unknown, action: string): never {
         if (error instanceof CheFuAcademyError) {
-            const message = this.errorDetailMessage(error.details) ?? error.message ?? `Failed to ${action}.`;
-            const statusCode = error?.statusCode ?? 500;
-            const details = error?.details ?? {};
-            switch (statusCode) {
-                case 401:
-                    throw new CheFuAcademyError(`Unauthorized: ${message}`, 401, details);
-                case 404:
-                    throw new CheFuAcademyError(`Course not found: ${message}`, 404, details);
-                case 429:
-                    throw new CheFuAcademyError(`Rate limit exceeded while trying to ${action}: ${message}`, 429, details);
-                default:
-                    throw new CheFuAcademyError(`Failed to ${action}: ${message}`, statusCode, details);
-            }
+            throw new CheFuAcademyError(
+                `Failed to ${action}: ${error.message}`,
+                error.statusCode,
+                error.details,
+            );
         }
 
-        // For unexpected errors not wrapped by the SDK
-        throw new CheFuAcademyError(
-            `Unexpected error while trying to ${action}: ${error?.message ?? 'Unknown error'}`,
-            error?.statusCode ?? 500,
-            error?.details ?? {}
-        );
-    }
-
-    private errorDetailMessage(details: unknown) {
-        if (!details || typeof details !== 'object' || !('message' in details)) {
-            return undefined;
-        }
-
-        const message = (details as { message?: unknown }).message;
-        if (Array.isArray(message)) return message.map(String).join(' ');
-        return typeof message === 'string' ? message : undefined;
+        throw new CheFuAcademyError(`Unexpected error while trying to ${action}.`);
     }
 }

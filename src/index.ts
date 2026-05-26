@@ -3,6 +3,8 @@
 import { Auth } from './auth';
 import { CheFuAcademyClient } from './client';
 import { Courses } from './courses';
+import { Keys } from './keys';
+import { Videos } from './videos';
 import type { CheFuAcademyConfig } from './client';
 
 export type {
@@ -15,7 +17,24 @@ export {
     CheFuAcademyError,
     type CheFuAcademyConfig,
 } from './client';
-export type { Course, CourseListResponse } from './courses';
+export type {
+    Chapter,
+    ChapterContentItem,
+    Course,
+    CourseListOptions,
+    CourseListResponse,
+    FeaturedCourseOptions,
+    Flashcard,
+    QA,
+    Quiz,
+} from './courses';
+export type {
+    ApiKeySummary,
+    CreateApiKeyOptions,
+    CreateApiKeyResponse,
+    RevokeApiKeyResponse,
+} from './keys';
+export type { Video, VideoListOptions, VideoListResponse } from './videos';
 
 /**
  * Main CheFu Academy SDK
@@ -23,6 +42,8 @@ export type { Course, CourseListResponse } from './courses';
 export class CheFuAcademy {
     readonly auth: Auth;
     readonly courses: Courses;
+    readonly videos: Videos;
+    readonly keys: Keys;
     readonly client: CheFuAcademyClient;
 
     constructor(config: CheFuAcademyConfig) {
@@ -34,6 +55,8 @@ export class CheFuAcademy {
 
         this.auth = new Auth(this.client);
         this.courses = new Courses(this.client);
+        this.videos = new Videos(this.client);
+        this.keys = new Keys(this.client);
     }
 }
 

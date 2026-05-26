@@ -64,7 +64,7 @@ import { CheFuAcademy } from "chefu-academy-sdk";
 
 ```ts
 const sdk = new CheFuAcademy({
-  apiKey: "YOUR_API_KEY",
+  apiKey: "chf_publicId_secret",
 });
 ```
 
@@ -91,8 +91,44 @@ main();
 ### Courses
 
 ```ts
-sdk.courses.getAll();        // List all courses
-sdk.courses.getById(courseId); // Get a single course
+sdk.courses.getAll({ limit: 20 });
+sdk.courses.search({ query: "javascript", category: "Technology", limit: 10 });
+sdk.courses.getFeatured({ limit: 8 });
+sdk.courses.getCategories();
+sdk.courses.getById(courseId);
+sdk.courses.getChapters(courseId);
+sdk.courses.getChapter(courseId, 0);
+sdk.courses.getLessons(courseId, 0);
+sdk.courses.getQuiz(courseId);
+sdk.courses.getFlashcards(courseId);
+sdk.courses.getQA(courseId);
+```
+
+### Videos
+
+```ts
+sdk.videos.getAll();
+sdk.videos.getById(videoId);
+sdk.videos.search({ query: "microchips", category: "Technology & Gadgets" });
+sdk.videos.getByCategory("Technology & Gadgets");
+```
+
+### API Keys
+
+API key management requires a logged-in developer user. You can pass a Firebase
+ID token directly, or call `sdk.auth.login()` first and the SDK will attach the
+returned token automatically.
+
+```ts
+const sdk = new CheFuAcademy({
+  authToken: process.env.CHEFU_AUTH_TOKEN,
+});
+
+const created = await sdk.keys.create({ name: "Production" });
+console.log(created.apiKey); // chf_publicId_secret
+
+const keys = await sdk.keys.list();
+await sdk.keys.revoke(keys[0].id);
 ```
 
 ### Authentication
@@ -130,6 +166,18 @@ chefu-academy whoami
 chefu-academy logout
 ```
 
+Developer API keys can also be managed from the CLI after login:
+
+```bash
+chefu-academy keys create --name "Local development"
+chefu-academy keys list
+chefu-academy keys revoke <keyId>
+```
+
+The CLI stores your user login session locally and refreshes it when possible.
+API key creation still requires an authenticated developer account; passwords
+are prompted interactively and are never accepted as command-line flags.
+
 ---
 
 
@@ -161,7 +209,7 @@ src/
 ```ts
 import { CheFuAcademy } from "chefu-academy-sdk";
 
-const sdk = new CheFuAcademy({ apiKey: "sk_live_xxx" });
+const sdk = new CheFuAcademy({ apiKey: "chf_publicId_secret" });
 
 const courses = await sdk.courses.getAll();
 console.log(courses);

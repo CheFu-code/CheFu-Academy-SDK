@@ -7,7 +7,8 @@ import axios, {
 } from 'axios';
 
 export interface CheFuAcademyConfig {
-    apiKey: string;
+    apiKey?: string;
+    authToken?: string;
     baseURL?: string;
     timeout?: number;
 }
@@ -37,28 +38,38 @@ export class CheFuAcademyError extends Error {
 }
 
 export class CheFuAcademyClient {
-    private apiKey: string;
+    private apiKey?: string;
+    private authToken?: string;
     private baseURL: string;
     private client: AxiosInstance;
 
     constructor(config: CheFuAcademyConfig) {
-        if (!config.apiKey) {
-            throw new CheFuAcademyError('[CheFu Academy SDK] API key is required', 401);
-        }
-
         this.apiKey = config.apiKey;
+        this.authToken = config.authToken;
         this.baseURL = config.baseURL ?? DEFAULT_BASE_URL;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (this.apiKey) {
+            headers.Authorization = `Bearer ${this.apiKey}`;
+        }
 
         this.client = axios.create({
             baseURL: this.baseURL,
             timeout: config.timeout ?? 10_000, // 10s timeout
-            headers: {
-                Authorization: `Bearer ${this.apiKey}`,
-                'Content-Type': 'application/json',
-            },
+            headers,
         });
 
         this.setupInterceptors();
+    }
+
+    setAuthToken(token: string) {
+        this.authToken = token;
+    }
+
+    clearAuthToken() {
+        this.authToken = undefined;
     }
 
     /**
@@ -161,6 +172,25 @@ export class CheFuAcademyClient {
         return res.data;
     }
 
+    async getWithUserAuth<T = unknown>(path: string): Promise<T> {
+        this.logRequest('get', path);
+        const res: AxiosResponse<T> = await this.client.get<T>(path, {
+            headers: this.userAuthHeaders(),
+        });
+        return res.data;
+    }
+
+    async postWithUserAuth<T = unknown>(
+        path: string,
+        data?: unknown,
+    ): Promise<T> {
+        this.logRequest('post', path, data);
+        const res: AxiosResponse<T> = await this.client.post<T>(path, data, {
+            headers: this.userAuthHeaders(),
+        });
+        return res.data;
+    }
+
     /**
      * HTTP PUT
      */
@@ -177,5 +207,18 @@ export class CheFuAcademyClient {
         this.logRequest('delete', path);
         const res: AxiosResponse<T> = await this.client.delete<T>(path);
         return res.data;
+    }
+
+    private userAuthHeaders() {
+        if (!this.authToken) {
+            throw new CheFuAcademyError(
+                'User authentication is required. Login first or pass authToken in the SDK config.',
+                401,
+            );
+        }
+
+        return {
+            Authorization: `Bearer ${this.authToken}`,
+        };
     }
 }
