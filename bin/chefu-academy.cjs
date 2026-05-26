@@ -124,6 +124,106 @@ async function askPassword(question, input = process.stdin, output = process.std
     });
 }
 
+async function askMenu(message, options, input = process.stdin, output = process.stdout) {
+    if (!input.isTTY || !output.isTTY || typeof input.setRawMode !== 'function') {
+        writeLine(message);
+        options.forEach((option, index) => {
+            writeLine(`${index + 1}. ${option.label}`);
+        });
+
+        const choice = await ask(`Select 1-${options.length}: `, { input, output });
+        const selectedIndex = Number(choice) - 1;
+        return options[selectedIndex]?.value ?? options[options.length - 1].value;
+    }
+
+    return new Promise((resolve, reject) => {
+        let selectedIndex = 0;
+        let rendered = false;
+        const previousRawMode = Boolean(input.isRaw);
+
+        function cleanup() {
+            input.off('keypress', onKeypress);
+            input.setRawMode(previousRawMode);
+            input.pause();
+            output.write('\x1B[?25h');
+        }
+
+        function render() {
+            if (rendered) {
+                readline.moveCursor(output, 0, -options.length);
+            } else {
+                writeLine(message);
+                writeLine('Use Up/Down arrows and press Enter.');
+                output.write('\x1B[?25l');
+            }
+
+            options.forEach((option, index) => {
+                readline.clearLine(output, 0);
+                readline.cursorTo(output, 0);
+                output.write(`${index === selectedIndex ? '>' : ' '} ${option.label}\n`);
+            });
+            rendered = true;
+        }
+
+        function finish() {
+            const selected = options[selectedIndex];
+            cleanup();
+            resolve(selected.value);
+        }
+
+        function cancel() {
+            cleanup();
+            output.write('\n');
+            reject(new Error('Cancelled.'));
+        }
+
+        function move(direction) {
+            selectedIndex =
+                (selectedIndex + direction + options.length) % options.length;
+            render();
+        }
+
+        function onKeypress(character, key = {}) {
+            if (key.ctrl && key.name === 'c') {
+                cancel();
+                return;
+            }
+
+            if (key.name === 'up' || character === 'k') {
+                move(-1);
+                return;
+            }
+
+            if (key.name === 'down' || character === 'j') {
+                move(1);
+                return;
+            }
+
+            if (key.name === 'return' || key.name === 'enter') {
+                finish();
+                return;
+            }
+
+            const numericChoice = Number(character);
+            if (
+                Number.isInteger(numericChoice) &&
+                numericChoice >= 1 &&
+                numericChoice <= options.length
+            ) {
+                selectedIndex = numericChoice - 1;
+                render();
+                finish();
+            }
+        }
+
+        readline.emitKeypressEvents(input);
+        input.setRawMode(true);
+        input.resume();
+        input.on('keypress', onKeypress);
+        render();
+    });
+}
+
 async function request(pathname, body) {
     const url = `${getBaseUrl()}${pathname}`;
     let response;
@@ -285,19 +385,18 @@ async function register() {
 
 async function runOnboarding({ source = 'cli' } = {}) {
     writeLine('CheFu Academy SDK');
-    writeLine('Choose an account setup option:');
-    writeLine('1. Login');
-    writeLine('2. Register new account');
-    writeLine('3. Skip');
+    const choice = await askMenu('Choose an account setup option:', [
+        { label: 'Login', value: 'login' },
+        { label: 'Register new account', value: 'register' },
+        { label: 'Skip', value: 'skip' },
+    ]);
 
-    const choice = await ask('Select 1, 2, or 3: ');
-
-    if (choice === '1') {
+    if (choice === 'login') {
         await login();
         return;
     }
 
-    if (choice === '2') {
+    if (choice === 'register') {
         await register();
         return;
     }

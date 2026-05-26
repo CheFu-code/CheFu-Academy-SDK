@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2026-05-26
+
+### Changed
+
+- Replaced the numbered setup prompt with an arrow-key terminal menu.
+
 ## [1.0.8] - 2026-05-26
 
 ### Changed

@@ -32,9 +32,9 @@ or using yarn:
 yarn add chefu-academy-sdk
 ```
 
-When installed in an interactive terminal, the package immediately opens a
-small setup prompt so users can log in or register a new CheFu Academy account.
-CI and non-interactive installs skip the prompt automatically.
+When installed in an interactive terminal, the package immediately opens an
+arrow-key setup menu so users can log in or register a new CheFu Academy
+account. CI and non-interactive installs skip the prompt automatically.
 
 To skip account setup manually:
 
