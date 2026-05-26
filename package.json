@@ -7,7 +7,7 @@
     "homepage": "https://github.com/CheFu-code/CheFu-Academy-SDK#readme",
     "repository": {
         "type": "git",
-        "url": "https://github.com/CheFu-code/CheFu-Academy-SDK.git"
+        "url": "git+https://github.com/CheFu-code/CheFu-Academy-SDK.git"
     },
     "bugs": {
         "url": "https://github.com/CheFu-code/CheFu-Academy-SDK/issues"
@@ -23,7 +23,7 @@
         }
     },
     "bin": {
-        "chefu-academy": "./bin/chefu-academy.cjs"
+        "chefu-academy": "bin/chefu-academy.cjs"
     },
     "files": [
         "bin",
