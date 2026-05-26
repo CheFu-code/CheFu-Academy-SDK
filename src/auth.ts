@@ -22,6 +22,25 @@ export interface RegisterResponse {
     };
 }
 
+export interface TerminalLoginOptions {
+    email?: string;
+    input?: NodeJS.ReadableStream;
+    output?: NodeJS.WritableStream;
+    maskPassword?: boolean;
+}
+
+type KeypressEvent = {
+    name?: string;
+    ctrl?: boolean;
+    meta?: boolean;
+};
+
+type RawModeStream = NodeJS.ReadableStream & {
+    isTTY?: boolean;
+    isRaw?: boolean;
+    setRawMode?: (mode: boolean) => void;
+};
+
 export class Auth {
     private client: CheFuAcademyClient;
 
@@ -56,6 +75,36 @@ export class Auth {
         } catch (error: any) {
             this.handleAuthError(error, 'login');
         }
+    }
+
+    /**
+     * Prompt for credentials in a Node.js terminal, then log in.
+     */
+    async loginWithTerminal(
+        options: TerminalLoginOptions = {},
+    ): Promise<LoginResponse> {
+        this.assertTerminalRuntime();
+
+        const input = options.input ?? process.stdin;
+        const output = options.output ?? process.stdout;
+        const email =
+            options.email ??
+            (await this.promptVisible('Email: ', input, output));
+        const password =
+            options.maskPassword === false
+                ? await this.promptVisible('Password: ', input, output)
+                : await this.promptPassword('Password: ', input, output);
+
+        return this.login(email, password);
+    }
+
+    /**
+     * Alias for loginWithTerminal().
+     */
+    async loginFromTerminal(
+        options: TerminalLoginOptions = {},
+    ): Promise<LoginResponse> {
+        return this.loginWithTerminal(options);
     }
 
     /**
@@ -144,5 +193,102 @@ export class Auth {
         throw new CheFuAcademyError(
             `Unexpected error during ${action}.`,
         );
+    }
+
+    private assertTerminalRuntime() {
+        if (
+            typeof process === 'undefined' ||
+            !process.stdin ||
+            !process.stdout
+        ) {
+            throw new CheFuAcademyError(
+                'Terminal login is only available in Node.js.',
+                400,
+            );
+        }
+    }
+
+    private async promptVisible(
+        prompt: string,
+        input: NodeJS.ReadableStream,
+        output: NodeJS.WritableStream,
+    ) {
+        const readline = await import('node:readline/promises');
+        const rl = readline.createInterface({ input, output });
+
+        try {
+            return (await rl.question(prompt)).trim();
+        } finally {
+            rl.close();
+        }
+    }
+
+    private async promptPassword(
+        prompt: string,
+        input: NodeJS.ReadableStream,
+        output: NodeJS.WritableStream,
+    ) {
+        const rawInput = input as RawModeStream;
+        const setRawMode = rawInput.setRawMode?.bind(rawInput);
+
+        if (!rawInput.isTTY || !setRawMode) {
+            return this.promptVisible(prompt, input, output);
+        }
+
+        const readline = await import('node:readline');
+
+        return new Promise<string>((resolve, reject) => {
+            let password = '';
+            const previousRawMode = Boolean(rawInput.isRaw);
+
+            const cleanup = () => {
+                input.off('keypress', onKeypress);
+                setRawMode(previousRawMode);
+                input.pause();
+            };
+
+            const finish = () => {
+                cleanup();
+                output.write('\n');
+                resolve(password);
+            };
+
+            const cancel = () => {
+                cleanup();
+                output.write('\n');
+                reject(new CheFuAcademyError('Terminal login cancelled.', 499));
+            };
+
+            const onKeypress = (character: string, key: KeypressEvent = {}) => {
+                if (key.ctrl && key.name === 'c') {
+                    cancel();
+                    return;
+                }
+
+                if (key.name === 'return' || key.name === 'enter') {
+                    finish();
+                    return;
+                }
+
+                if (key.name === 'backspace') {
+                    if (password.length > 0) {
+                        password = password.slice(0, -1);
+                        output.write('\b \b');
+                    }
+                    return;
+                }
+
+                if (!character || key.ctrl || key.meta) return;
+
+                password += character;
+                output.write('*');
+            };
+
+            output.write(prompt);
+            readline.emitKeypressEvents(input);
+            setRawMode(true);
+            input.resume();
+            input.on('keypress', onKeypress);
+        });
     }
 }

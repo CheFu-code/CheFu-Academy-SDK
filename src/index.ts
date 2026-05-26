@@ -1,8 +1,21 @@
 // src/index.ts
 
 import { Auth } from './auth';
-import { CheFuAcademyClient, CheFuAcademyConfig } from './client';
+import { CheFuAcademyClient } from './client';
 import { Courses } from './courses';
+import type { CheFuAcademyConfig } from './client';
+
+export type {
+    LoginResponse,
+    RegisterResponse,
+    TerminalLoginOptions,
+} from './auth';
+export {
+    CheFuAcademyClient,
+    CheFuAcademyError,
+    type CheFuAcademyConfig,
+} from './client';
+export type { Course, CourseListResponse } from './courses';
 
 /**
  * Main CheFu Academy SDK
