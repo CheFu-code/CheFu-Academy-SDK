@@ -33,6 +33,7 @@
     "scripts": {
         "build": "tsup src/index.ts --dts --format esm,cjs --clean",
         "dev": "tsup src/index.ts --watch --dts --format esm,cjs",
+        "typecheck": "tsc --noEmit",
         "postinstall": "node scripts/postinstall.cjs",
         "prepare": "npm run build"
     },
