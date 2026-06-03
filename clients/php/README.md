@@ -14,3 +14,11 @@ $courses = $client->listCourses(['limit' => 5]);
 ```bash
 composer install
 ```
+
+## Registry Install
+
+After the package is connected on Packagist:
+
+```bash
+composer require chefu/academy
+```

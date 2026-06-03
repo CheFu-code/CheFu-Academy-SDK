@@ -122,13 +122,34 @@ Expected install coordinate after publish:
 
 ## Packagist
 
-Packagist publishes from a connected VCS repository. Because the PHP client is
-stored under `clients/php`, the reliable production setup is either:
+Packagist publishes from a connected VCS repository and expects
+`composer.json` in the default branch root. The repository root now includes a
+Composer manifest for `chefu/academy` that autoloads the PHP source from
+`clients/php/src`.
 
-1. Split `clients/php` into a dedicated `CheFu-Academy-PHP` repository and add
-   that repository to Packagist as `chefu/academy`.
-2. Configure an approved monorepo/subdirectory release flow for Packagist and
-   connect it to the official CheFu account.
+Submit this repository URL to Packagist:
+
+```text
+https://github.com/CheFu-code/CheFu-Academy-SDK
+```
+
+The PHP package release tag is:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+If you use the Packagist API, package creation requires the main Packagist API
+token:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $PACKAGIST_USERNAME:$PACKAGIST_TOKEN" \
+  https://packagist.org/api/create-package \
+  -d '{"repository":"https://github.com/CheFu-code/CheFu-Academy-SDK"}'
+```
 
 Install after publish:
 

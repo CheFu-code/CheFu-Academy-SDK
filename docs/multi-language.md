@@ -83,7 +83,7 @@ Current registry status:
 | Python                | `chefu-academy`                                             | Ready for PyPI credentials                        |
 | Java                  | `com.chefu:chefu-academy`                                   | Ready for Maven Central credentials/signing setup |
 | C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                                |
-| PHP                   | `chefu/academy`                                             | Ready for Packagist account/repo setup            |
+| PHP                   | `chefu/academy`                                             | Ready for Packagist connection                    |
 | Ruby                  | `chefu_academy@0.1.0`                                       | Published to RubyGems                             |
 
 ### Python
@@ -134,6 +134,10 @@ var courses = await client.ListCoursesAsync(new Dictionary<string, object?>
 ```
 
 ### PHP
+
+```bash
+composer require chefu/academy
+```
 
 ```php
 $client = new \CheFu\Academy\CheFuAcademyClient(apiKey: 'chf_publicId_secret');
