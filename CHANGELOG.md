@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## [1.0.10] - 2026-06-03
+
 ### Added
 
 - Added an OpenAPI 3.1 contract for the CheFu Academy REST API.

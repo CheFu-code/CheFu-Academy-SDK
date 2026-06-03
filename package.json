@@ -1,6 +1,6 @@
 {
     "name": "chefu-academy-sdk",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "A TypeScript SDK and OpenAPI REST contract for the CheFu Academy platform",
     "author": "Kurisani Maluleke",
     "license": "MIT",
