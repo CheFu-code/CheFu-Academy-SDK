@@ -27,6 +27,7 @@
     },
     "files": [
         "bin",
+        "clients",
         "docs",
         "examples",
         "openapi",
@@ -51,6 +52,10 @@
         "go",
         "java",
         "csharp",
+        "dotnet",
+        "php",
+        "ruby",
+        "curl",
         "api-client",
         "education"
     ],

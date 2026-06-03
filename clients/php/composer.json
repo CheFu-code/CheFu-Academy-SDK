@@ -1,0 +1,16 @@
+{
+  "name": "chefu/academy",
+  "description": "Official PHP client for the CheFu Academy API",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "CheFu\\Academy\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.1",
+    "ext-curl": "*",
+    "ext-json": "*"
+  }
+}

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>CheFu.Academy</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>CheFu Inc</Authors>
+    <Description>Official .NET client for the CheFu Academy API</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/CheFu-code/CheFu-Academy-SDK</RepositoryUrl>
+  </PropertyGroup>
+</Project>

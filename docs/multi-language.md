@@ -1,14 +1,26 @@
-# CheFu Academy API in Other Languages
+# CheFu Academy SDK in Other Languages
 
-The npm package is still the first-class JavaScript and TypeScript SDK, but the
-CheFu Academy API is language-neutral. Every SDK method maps to a REST endpoint
-under:
+The npm package remains the first-class JavaScript and TypeScript SDK, and this
+repository now also includes official first-party client sources for other
+languages. Every client maps to the same REST API under:
 
 ```text
 https://api.chefuinc.com/api
 ```
 
-Use the OpenAPI contract at:
+Official client sources:
+
+```text
+clients/python
+clients/go
+clients/java
+clients/csharp
+clients/php
+clients/ruby
+clients/curl
+```
+
+The OpenAPI contract remains the source of truth:
 
 ```text
 openapi/chefu-academy-api.openapi.yaml
@@ -56,9 +68,76 @@ Example:
 GET /courses?limit=20&cursor=20
 ```
 
-## Generate Native Clients
+## Official Client Packages
 
-You can generate clients from the OpenAPI file with OpenAPI Generator:
+These clients are source-ready in this repo. Publishing them to registries such
+as PyPI, Maven Central, NuGet, Packagist, RubyGems, and the Go module proxy
+requires release credentials and automation, but the maintained client source is
+now first-party.
+
+### Python
+
+```bash
+pip install -e clients/python
+```
+
+```python
+from chefu_academy import CheFuAcademy
+
+client = CheFuAcademy(api_key="chf_publicId_secret")
+print(client.courses.list(limit=5))
+```
+
+### Go
+
+```go
+client := chefuacademy.NewClient(chefuacademy.Config{
+    APIKey: "chf_publicId_secret",
+})
+courses, err := client.ListCourses(context.Background(), chefuacademy.ListOptions{Limit: 5})
+```
+
+### Java
+
+```java
+CheFuAcademyClient client = CheFuAcademyClient.withApiKey("chf_publicId_secret");
+JsonNode courses = client.listCourses(Map.of("limit", 5));
+```
+
+### C#
+
+```csharp
+var client = new CheFuAcademyClient(apiKey: "chf_publicId_secret");
+var courses = await client.ListCoursesAsync(new Dictionary<string, object?>
+{
+    ["limit"] = 5,
+});
+```
+
+### PHP
+
+```php
+$client = new \CheFu\Academy\CheFuAcademyClient(apiKey: 'chf_publicId_secret');
+$courses = $client->listCourses(['limit' => 5]);
+```
+
+### Ruby
+
+```ruby
+client = CheFuAcademy::Client.new(api_key: 'chf_publicId_secret')
+courses = client.list_courses(limit: 5)
+```
+
+### cURL
+
+```bash
+export CHEFU_API_KEY="chf_publicId_secret"
+clients/curl/chefu-academy.sh courses list 5
+```
+
+## Generate Additional Clients
+
+You can generate more clients from the OpenAPI file with OpenAPI Generator:
 
 ```bash
 npx @openapitools/openapi-generator-cli generate \
@@ -67,23 +146,18 @@ npx @openapitools/openapi-generator-cli generate \
   -o generated/python
 ```
 
-Common generator names:
+Useful generator names for future SDKs:
 
 ```text
-python
-go
-java
-csharp
-php
-ruby
 kotlin
 swift5
 rust
 dart
 ```
 
-Generated clients are a good start, but keep the OpenAPI contract as the source
-of truth and review generated code before publishing a production package.
+Generated clients are a good start for additional ecosystems, but keep the
+OpenAPI contract as the source of truth and review generated code before
+publishing a production package.
 
 ## Manual HTTP Quick Starts
 
@@ -93,7 +167,7 @@ Each example reads `CHEFU_API_KEY` from the environment.
 export CHEFU_API_KEY="chf_publicId_secret"
 ```
 
-Examples included in this repository:
+Simple HTTP examples are still included in this repository:
 
 - `examples/curl/quickstart.sh`
 - `examples/python/chefu_academy_quickstart.py`
@@ -129,18 +203,7 @@ Example response shape:
 }
 ```
 
-## Recommended Native SDK Roadmap
-
-When we are ready to publish official packages beyond npm, use this order:
-
-1. Python: highest demand for education/data workflows.
-2. Go: backend services and CLI tools.
-3. C#: .NET enterprise and game tooling.
-4. Java/Kotlin: Android and JVM backends.
-5. PHP/Ruby: web integrations.
-6. Swift/Dart: mobile clients.
-
-Each native SDK should keep the same concepts as the TypeScript SDK:
+Each official SDK keeps the same concepts as the TypeScript SDK:
 
 - `client.courses.list()`
 - `client.courses.search()`

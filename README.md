@@ -1,10 +1,10 @@
 # CheFu Academy SDK
 
-A fully typed **TypeScript SDK** and language-neutral REST contract for
-interacting with the **CheFu Academy** platform. The npm package is designed for
-Node.js and modern JavaScript/TypeScript projects, while the OpenAPI contract and
-examples make the same API usable from Python, Go, Java, C#, PHP, Ruby, cURL,
-and future generated SDKs.
+A fully typed **TypeScript SDK**, official multi-language client sources, and a
+language-neutral REST contract for interacting with the **CheFu Academy**
+platform. The npm package is designed for Node.js and modern
+JavaScript/TypeScript projects, while the same repository now ships first-party
+clients for Python, Go, Java, C#, PHP, Ruby, and cURL.
 
 ---
 
@@ -19,7 +19,8 @@ and future generated SDKs.
 - Clean, minimal SDK design
 - Full TypeScript typings
 - OpenAPI contract for non-JS clients
-- Multi-language examples
+- Official Python, Go, Java, C#, PHP, Ruby, and cURL client sources
+- Multi-language examples for direct REST calls
 - Ready for production & npm
 
 ---
@@ -93,9 +94,17 @@ main();
 ## Other Languages
 
 CheFu Academy is not limited to JavaScript/TypeScript. The SDK repository now
-includes an OpenAPI contract and examples for common languages:
+includes official first-party clients, an OpenAPI contract, and simple HTTP
+examples for common languages:
 
 ```text
+clients/python
+clients/go
+clients/java
+clients/csharp
+clients/php
+clients/ruby
+clients/curl
 openapi/chefu-academy-api.openapi.yaml
 docs/multi-language.md
 examples/python/chefu_academy_quickstart.py
@@ -119,7 +128,12 @@ And the same bearer API key header:
 Authorization: Bearer chf_publicId_secret
 ```
 
-You can generate native clients from the OpenAPI contract:
+The non-JS client sources are maintained in this repo and shipped with the npm
+package. Registry publishing for PyPI, Maven Central, NuGet, Packagist,
+RubyGems, and Go module distribution still requires release credentials and CI
+automation.
+
+You can also generate additional clients from the OpenAPI contract:
 
 ```bash
 npx @openapitools/openapi-generator-cli generate \
@@ -128,8 +142,8 @@ npx @openapitools/openapi-generator-cli generate \
   -o generated/python
 ```
 
-See [docs/multi-language.md](docs/multi-language.md) for generator commands,
-auth rules, pagination, and example usage.
+See [docs/multi-language.md](docs/multi-language.md) for official client usage,
+generator commands, auth rules, pagination, and example usage.
 
 ---
 
