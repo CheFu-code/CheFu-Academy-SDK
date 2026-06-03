@@ -1,9 +1,10 @@
 # CheFu Academy SDK
 
-A fully typed **TypeScript SDK** for interacting with the **CheFu Academy** platform.  
-This SDK simplifies authentication, API requests, and access to CheFu Academy resources such as courses.
-
-Designed for **Node.js** and modern JavaScript/TypeScript projects.
+A fully typed **TypeScript SDK** and language-neutral REST contract for
+interacting with the **CheFu Academy** platform. The npm package is designed for
+Node.js and modern JavaScript/TypeScript projects, while the OpenAPI contract and
+examples make the same API usable from Python, Go, Java, C#, PHP, Ruby, cURL,
+and future generated SDKs.
 
 ---
 
@@ -13,8 +14,12 @@ Designed for **Node.js** and modern JavaScript/TypeScript projects.
 - API key–based authentication
 - Centralized API client
 - Course listing & retrieval
+- Video listing & retrieval
+- Developer API key management
 - Clean, minimal SDK design
 - Full TypeScript typings
+- OpenAPI contract for non-JS clients
+- Multi-language examples
 - Ready for production & npm
 
 ---
@@ -82,6 +87,49 @@ async function main() {
 
 main();
 ```
+
+---
+
+## Other Languages
+
+CheFu Academy is not limited to JavaScript/TypeScript. The SDK repository now
+includes an OpenAPI contract and examples for common languages:
+
+```text
+openapi/chefu-academy-api.openapi.yaml
+docs/multi-language.md
+examples/python/chefu_academy_quickstart.py
+examples/go/quickstart.go
+examples/java/CheFuAcademyQuickstart.java
+examples/csharp/Program.cs
+examples/php/quickstart.php
+examples/ruby/quickstart.rb
+examples/curl/quickstart.sh
+```
+
+Every language uses the same REST base URL:
+
+```text
+https://api.chefuinc.com/api
+```
+
+And the same bearer API key header:
+
+```http
+Authorization: Bearer chf_publicId_secret
+```
+
+You can generate native clients from the OpenAPI contract:
+
+```bash
+npx @openapitools/openapi-generator-cli generate \
+  -i openapi/chefu-academy-api.openapi.yaml \
+  -g python \
+  -o generated/python
+```
+
+See [docs/multi-language.md](docs/multi-language.md) for generator commands,
+auth rules, pagination, and example usage.
 
 ---
 

@@ -1,0 +1,948 @@
+openapi: 3.1.0
+info:
+  title: CheFu Academy API
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+  summary: Language-neutral REST API for CheFu Academy courses, videos, auth, and developer API keys.
+  description: |
+    This contract mirrors the API used by the TypeScript `chefu-academy-sdk` package.
+    Use it directly from any HTTP-capable language or feed it into an OpenAPI client generator.
+servers:
+  - url: https://api.chefuinc.com/api
+    description: Production API
+tags:
+  - name: Auth
+    description: Developer account login, registration, refresh, and key verification.
+  - name: Courses
+    description: Course catalog listing, search, and learning content.
+  - name: Videos
+    description: Public CheFu Academy video catalog.
+  - name: API Keys
+    description: Developer API key creation, listing, revocation, and leak reporting.
+security:
+  - AcademyApiKey: []
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in with CheFu Academy credentials.
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login session.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a developer account.
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Registration response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh a Firebase ID token using a refresh token.
+      operationId: refreshSession
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        "200":
+          description: Refreshed session.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefreshResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/verify:
+    post:
+      tags: [Auth]
+      summary: Verify the current developer API key.
+      operationId: verifyApiKey
+      responses:
+        "200":
+          description: API key verification result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid, plan]
+                properties:
+                  valid:
+                    type: boolean
+                  plan:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses:
+    get:
+      tags: [Courses]
+      summary: List courses.
+      operationId: listCourses
+      parameters:
+        - $ref: "#/components/parameters/Query"
+        - $ref: "#/components/parameters/Category"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Course list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses/list:
+    post:
+      tags: [Courses]
+      summary: List courses with JSON request body.
+      operationId: listCoursesPost
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListRequest"
+      responses:
+        "200":
+          description: Course list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses/search:
+    get:
+      tags: [Courses]
+      summary: Search courses.
+      operationId: searchCourses
+      parameters:
+        - $ref: "#/components/parameters/Query"
+        - $ref: "#/components/parameters/Category"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Course search results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses/featured:
+    get:
+      tags: [Courses]
+      summary: List featured courses.
+      operationId: listFeaturedCourses
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Featured courses.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses/categories:
+    get:
+      tags: [Courses]
+      summary: List available course categories.
+      operationId: listCourseCategories
+      responses:
+        "200":
+          description: Course categories.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [categories, total]
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: string
+                  total:
+                    type: integer
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /courses/{courseId}:
+    get:
+      tags: [Courses]
+      summary: Get one course.
+      operationId: getCourseById
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Course.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/chapters:
+    get:
+      tags: [Courses]
+      summary: Get course chapters.
+      operationId: getCourseChapters
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Course chapters.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, chapters]
+                properties:
+                  courseId:
+                    type: string
+                  chapters:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Chapter"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/chapters/{chapterIndex}:
+    get:
+      tags: [Courses]
+      summary: Get a single course chapter.
+      operationId: getCourseChapter
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/ChapterIndex"
+      responses:
+        "200":
+          description: Course chapter.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, chapterIndex, chapter]
+                properties:
+                  courseId:
+                    type: string
+                  chapterIndex:
+                    type: integer
+                  chapter:
+                    $ref: "#/components/schemas/Chapter"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/chapters/{chapterIndex}/lessons:
+    get:
+      tags: [Courses]
+      summary: Get lessons for a course chapter.
+      operationId: getCourseLessons
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/ChapterIndex"
+      responses:
+        "200":
+          description: Chapter lessons.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, chapterIndex, lessons]
+                properties:
+                  courseId:
+                    type: string
+                  chapterIndex:
+                    type: integer
+                  lessons:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ChapterContentItem"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/quiz:
+    get:
+      tags: [Courses]
+      summary: Get a course quiz.
+      operationId: getCourseQuiz
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Quiz.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, quiz]
+                properties:
+                  courseId:
+                    type: string
+                  quiz:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Quiz"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/flashcards:
+    get:
+      tags: [Courses]
+      summary: Get course flashcards.
+      operationId: getCourseFlashcards
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Flashcards.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, flashcards]
+                properties:
+                  courseId:
+                    type: string
+                  flashcards:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Flashcard"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /courses/{courseId}/qa:
+    get:
+      tags: [Courses]
+      summary: Get course Q&A.
+      operationId: getCourseQa
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Q&A.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courseId, qa]
+                properties:
+                  courseId:
+                    type: string
+                  qa:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/QA"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /videos:
+    get:
+      tags: [Videos]
+      summary: List videos.
+      operationId: listVideos
+      parameters:
+        - $ref: "#/components/parameters/Query"
+        - $ref: "#/components/parameters/Category"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Video list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /videos/search:
+    get:
+      tags: [Videos]
+      summary: Search videos.
+      operationId: searchVideos
+      parameters:
+        - $ref: "#/components/parameters/Query"
+        - $ref: "#/components/parameters/Category"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Video search results.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /videos/category/{category}:
+    get:
+      tags: [Videos]
+      summary: List videos by category.
+      operationId: listVideosByCategory
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Videos.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /videos/{videoId}:
+    get:
+      tags: [Videos]
+      summary: Get one video.
+      operationId: getVideoById
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Video.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /keys/create:
+    post:
+      tags: [API Keys]
+      summary: Create a developer API key.
+      operationId: createApiKey
+      security:
+        - FirebaseIdToken: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: New API key. Save it immediately.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateApiKeyResponse"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /keys/list:
+    get:
+      tags: [API Keys]
+      summary: List developer API keys.
+      operationId: listApiKeys
+      security:
+        - FirebaseIdToken: []
+      responses:
+        "200":
+          description: API keys.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKeySummary"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /keys/revoke:
+    post:
+      tags: [API Keys]
+      summary: Revoke a developer API key.
+      operationId: revokeApiKey
+      security:
+        - FirebaseIdToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [keyId]
+              properties:
+                keyId:
+                  type: string
+      responses:
+        "200":
+          description: Revoke response.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success]
+                properties:
+                  success:
+                    type: boolean
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /keys/report-leak:
+    post:
+      tags: [API Keys]
+      summary: Report a leaked CheFu Academy API key.
+      operationId: reportLeakedApiKey
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apiKey:
+                  type: string
+                leakedKey:
+                  type: string
+                source:
+                  type: string
+                url:
+                  type: string
+                repository:
+                  type: string
+                commit:
+                  type: string
+      responses:
+        "202":
+          description: Leak report accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [received]
+                properties:
+                  received:
+                    type: boolean
+        "400":
+          $ref: "#/components/responses/ValidationError"
+components:
+  securitySchemes:
+    AcademyApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: chf_publicId_secret
+      description: Developer API key, for catalog endpoints.
+    FirebaseIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID token
+      description: User ID token returned by `/auth/login`, for API key management.
+  parameters:
+    CourseId:
+      name: courseId
+      in: path
+      required: true
+      schema:
+        type: string
+    ChapterIndex:
+      name: chapterIndex
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+    Query:
+      name: query
+      in: query
+      schema:
+        type: string
+    Category:
+      name: category
+      in: query
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Cursor returned from a previous list response.
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+  responses:
+    Unauthorized:
+      description: Authentication failed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Permission denied.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Conflict:
+      description: Resource conflict.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ValidationError:
+      description: Validation failed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        error:
+          type: string
+        requestId:
+          type: string
+    ListRequest:
+      type: object
+      properties:
+        query:
+          type: string
+        category:
+          type: string
+        cursor:
+          type: string
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+    RegisterRequest:
+      allOf:
+        - $ref: "#/components/schemas/LoginRequest"
+        - type: object
+          required: [fullname]
+          properties:
+            fullname:
+              type: string
+              minLength: 2
+    LoginResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+        idToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: string
+        customToken:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+    RegisterResponse:
+      type: object
+      required: [message, user]
+      properties:
+        message:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+    RefreshResponse:
+      type: object
+      required: [token, idToken]
+      properties:
+        token:
+          type: string
+        idToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: string
+        userId:
+          type: string
+    User:
+      type: object
+      required: [id, email, fullname]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        fullname:
+          type: string
+    CourseListResponse:
+      type: object
+      required: [courses, total]
+      properties:
+        courses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Course"
+        nextCursor:
+          type:
+            - string
+            - "null"
+        total:
+          type: integer
+    Course:
+      type: object
+      required: [id]
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+        courseTitle:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        banner_image:
+          type: string
+        bannerImage:
+          type: string
+        category:
+          type: string
+        chapters:
+          type: array
+          items:
+            $ref: "#/components/schemas/Chapter"
+        quiz:
+          type: array
+          items:
+            $ref: "#/components/schemas/Quiz"
+        flashcards:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flashcard"
+        qa:
+          type: array
+          items:
+            $ref: "#/components/schemas/QA"
+    Chapter:
+      type: object
+      additionalProperties: true
+      properties:
+        chapterName:
+          type: string
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChapterContentItem"
+    ChapterContentItem:
+      type: object
+      additionalProperties: true
+      properties:
+        topic:
+          type: string
+        explain:
+          type: string
+        code:
+          type: string
+        example:
+          type: string
+    Quiz:
+      type: object
+      additionalProperties: true
+      properties:
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctAns:
+          type: string
+    Flashcard:
+      type: object
+      additionalProperties: true
+      properties:
+        front:
+          type: string
+        back:
+          type: string
+    QA:
+      type: object
+      additionalProperties: true
+      properties:
+        question:
+          type: string
+        answer:
+          type: string
+    VideoListResponse:
+      type: object
+      required: [videos, total]
+      properties:
+        videos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Video"
+        nextCursor:
+          type:
+            - string
+            - "null"
+        total:
+          type: integer
+    Video:
+      type: object
+      required: [id]
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+        source:
+          type: string
+          enum: [uploaded, youtube]
+        videoId:
+          type: string
+        youtubeVideoId:
+          type: string
+        title:
+          type: string
+        instructorCompany:
+          type: string
+        instructorName:
+          type: string
+        description:
+          type: string
+        videoURL:
+          type: string
+        embedURL:
+          type: string
+        thumbnailURL:
+          type: string
+        category:
+          type: string
+        visibility:
+          type: string
+        level:
+          type: string
+        duration:
+          type: number
+        views:
+          type: number
+        topics:
+          type: array
+          items:
+            type: string
+    CreateApiKeyResponse:
+      type: object
+      required: [apiKey, publicId, warning]
+      properties:
+        apiKey:
+          type: string
+        publicId:
+          type: string
+        warning:
+          type: string
+    ApiKeySummary:
+      type: object
+      required: [id, name, active, plan]
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+        publicId:
+          type: string
+        prefix:
+          type: string
+        name:
+          type: string
+        active:
+          type: boolean
+        plan:
+          type: string

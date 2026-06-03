@@ -1,7 +1,7 @@
 {
     "name": "chefu-academy-sdk",
     "version": "1.0.9",
-    "description": "A TypeScript SDK for the CheFu Academy platform",
+    "description": "A TypeScript SDK and OpenAPI REST contract for the CheFu Academy platform",
     "author": "Kurisani Maluleke",
     "license": "MIT",
     "homepage": "https://github.com/CheFu-code/CheFu-Academy-SDK#readme",
@@ -27,6 +27,9 @@
     },
     "files": [
         "bin",
+        "docs",
+        "examples",
+        "openapi",
         "scripts",
         "dist"
     ],
@@ -42,6 +45,12 @@
         "academy",
         "sdk",
         "typescript",
+        "openapi",
+        "rest-api",
+        "python",
+        "go",
+        "java",
+        "csharp",
         "api-client",
         "education"
     ],

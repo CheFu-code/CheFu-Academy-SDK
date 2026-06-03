@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Added
+
+- Added an OpenAPI 3.1 contract for the CheFu Academy REST API.
+- Added multi-language API guidance for generating native clients.
+- Added quick-start examples for Python, Go, Java, C#, PHP, Ruby, and cURL.
+
 ## [1.0.9] - 2026-05-26
 
 ### Changed
