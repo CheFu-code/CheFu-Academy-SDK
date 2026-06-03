@@ -3,6 +3,11 @@ name: Publish Native Clients
 on:
   workflow_dispatch:
     inputs:
+      publish_pypi:
+        description: Publish the Python client to PyPI
+        required: true
+        type: boolean
+        default: true
       publish_nuget:
         description: Publish the C#/.NET client to NuGet
         required: true
@@ -20,6 +25,7 @@ on:
         default: true
   push:
     tags:
+      - "clients/python/v*"
       - "clients/csharp/v*"
       - "clients/ruby/v*"
       - "clients/java/v*"
@@ -32,6 +38,42 @@ permissions:
   contents: read
 
 jobs:
+  publish-pypi:
+    name: Publish PyPI package
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' && inputs.publish_pypi) ||
+        startsWith(github.ref, 'refs/tags/clients/python/v')
+      }}
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: clients/python
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Build package
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build
+          python -m twine check dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: clients/python/dist/
+
   publish-nuget:
     name: Publish NuGet package
     runs-on: ubuntu-latest

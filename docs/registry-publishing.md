@@ -10,6 +10,7 @@ the TypeScript package.
 - NuGet: `CheFu.Academy@0.1.0`
 - Packagist: `chefu/academy@0.1.0`
 - RubyGems: `chefu_academy@0.1.0`
+- Maven Central: `com.chefuinc:chefu-academy:0.1.0`
 
 The Go client is published by Git tag, not by uploading to a package registry.
 For the module under `clients/go`, the tag format is:
@@ -44,7 +45,7 @@ Set credentials as environment variables or CI secrets. Do not commit them.
 | Registry      | Required secret                                                   |
 | ------------- | ----------------------------------------------------------------- |
 | npm           | `NPM_TOKEN`                                                       |
-| PyPI          | `PYPI_API_TOKEN`                                                  |
+| PyPI          | PyPI Trusted Publisher for this GitHub workflow                   |
 | NuGet         | `NUGET_API_KEY`                                                   |
 | RubyGems      | `RUBYGEMS_API_KEY`                                                |
 | Maven Central | Central/Sonatype username, token, GPG private key, GPG passphrase |
@@ -52,14 +53,38 @@ Set credentials as environment variables or CI secrets. Do not commit them.
 
 ## PyPI
 
-Requires Python, `build`, `twine`, and `PYPI_API_TOKEN`.
+The Python client publishes through PyPI Trusted Publishing, which avoids a
+long-lived API token. Configure a pending publisher in PyPI before pushing the
+release tag.
+
+Pending publisher values:
+
+```text
+PyPI project name: chefu-academy
+Owner: CheFu-code
+Repository name: CheFu-Academy-SDK
+Workflow name: publish-native-clients.yml
+Environment name: pypi
+```
+
+The Python release workflow runs when the `clients/python/v0.1.0` tag is
+pushed:
+
+```bash
+git tag clients/python/v0.1.0
+git push origin clients/python/v0.1.0
+```
+
+The workflow builds the source distribution and wheel, runs `twine check`, and
+publishes with `pypa/gh-action-pypi-publish`.
+
+Manual local build check:
 
 ```bash
 cd clients/python
 python -m pip install --upgrade build twine
 python -m build
 python -m twine check dist/*
-python -m twine upload dist/* -u __token__ -p "$PYPI_API_TOKEN"
 ```
 
 Install after publish:
