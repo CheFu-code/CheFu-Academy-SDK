@@ -29,13 +29,13 @@ curl https://proxy.golang.org/github.com/!che!fu-code/chefu-academy-sdk/clients/
 
 These names were checked as available before first release:
 
-| Registry      | Package                   |
-| ------------- | ------------------------- |
-| PyPI          | `chefu-academy`           |
-| Maven Central | `com.chefu:chefu-academy` |
-| NuGet         | `CheFu.Academy`           |
-| Packagist     | `chefu/academy`           |
-| RubyGems      | `chefu_academy`           |
+| Registry      | Package                            |
+| ------------- | ---------------------------------- |
+| PyPI          | `chefu-academy`                    |
+| Maven Central | `com.chefuinc:chefu-academy:0.1.0` |
+| NuGet         | `CheFu.Academy`                    |
+| Packagist     | `chefu/academy`                    |
+| RubyGems      | `chefu_academy`                    |
 
 ## Required Credentials
 
@@ -108,14 +108,34 @@ gem install chefu_academy
 ## Maven Central
 
 Requires Maven Central publishing credentials and GPG signing. The Java client
-POM already defines package identity and metadata, but Maven Central release
-still needs deployment/signing configuration for the official CheFu namespace.
+uses the `com.chefuinc` group ID, which must be verified in Central Portal
+before publishing.
+
+Required GitHub Actions secrets:
+
+```text
+CENTRAL_USERNAME
+CENTRAL_PASSWORD
+GPG_PRIVATE_KEY
+GPG_PASSPHRASE
+```
+
+The Central Portal user token maps to `CENTRAL_USERNAME` and
+`CENTRAL_PASSWORD`. If the token has ever been pasted into chat, logs, or source
+control, revoke it and create a fresh token before publishing.
+
+The Java release workflow runs when the `clients/java/v0.1.0` tag is pushed:
+
+```bash
+git tag clients/java/v0.1.0
+git push origin clients/java/v0.1.0
+```
 
 Expected install coordinate after publish:
 
 ```xml
 <dependency>
-  <groupId>com.chefu</groupId>
+  <groupId>com.chefuinc</groupId>
   <artifactId>chefu-academy</artifactId>
   <version>0.1.0</version>
 </dependency>

@@ -81,7 +81,7 @@ Current registry status:
 | JavaScript/TypeScript | `chefu-academy-sdk@1.0.10`                                  | Published to npm                                  |
 | Go                    | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy  |
 | Python                | `chefu-academy`                                             | Ready for PyPI credentials                        |
-| Java                  | `com.chefu:chefu-academy`                                   | Ready for Maven Central credentials/signing setup |
+| Java                  | `com.chefuinc:chefu-academy:0.1.0`                          | Ready for Maven Central credentials/signing setup |
 | C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                                |
 | PHP                   | `chefu/academy@0.1.0`                                       | Published to Packagist                            |
 | Ruby                  | `chefu_academy@0.1.0`                                       | Published to RubyGems                             |
@@ -113,6 +113,14 @@ courses, err := client.ListCourses(context.Background(), chefuacademy.ListOption
 ```
 
 ### Java
+
+```xml
+<dependency>
+  <groupId>com.chefuinc</groupId>
+  <artifactId>chefu-academy</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
 
 ```java
 CheFuAcademyClient client = CheFuAcademyClient.withApiKey("chf_publicId_secret");

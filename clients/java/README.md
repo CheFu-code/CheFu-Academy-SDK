@@ -2,6 +2,18 @@
 
 Official Java/Maven source client for the CheFu Academy API.
 
+## Install
+
+After the Maven Central release is published:
+
+```xml
+<dependency>
+  <groupId>com.chefuinc</groupId>
+  <artifactId>chefu-academy</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
 ## Usage
 
 ```java
