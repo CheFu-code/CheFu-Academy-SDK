@@ -7,6 +7,7 @@ the TypeScript package.
 
 - npm: `chefu-academy-sdk@1.0.10`
 - Go module: `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0`
+- PyPI: `chefu-academy@0.1.0`
 - NuGet: `CheFu.Academy@0.1.0`
 - Packagist: `chefu/academy@0.1.0`
 - RubyGems: `chefu_academy@0.1.0`

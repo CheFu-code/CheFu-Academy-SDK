@@ -71,8 +71,8 @@ GET /courses?limit=20&cursor=20
 ## Official Client Packages
 
 These clients are source-ready in this repo and ship in the npm package. npm,
-Go, NuGet, Packagist, RubyGems, and Maven Central packages are available now.
-The Python client is ready for PyPI Trusted Publishing.
+Go, PyPI, NuGet, Packagist, RubyGems, and Maven Central packages are available
+now.
 
 Current registry status:
 
@@ -80,7 +80,7 @@ Current registry status:
 | --------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
 | JavaScript/TypeScript | `chefu-academy-sdk@1.0.10`                                  | Published to npm                                 |
 | Go                    | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy |
-| Python                | `chefu-academy`                                             | Ready for PyPI Trusted Publisher                 |
+| Python                | `chefu-academy@0.1.0`                                       | Published to PyPI                                |
 | Java                  | `com.chefuinc:chefu-academy:0.1.0`                          | Published to Maven Central                       |
 | C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                               |
 | PHP                   | `chefu/academy@0.1.0`                                       | Published to Packagist                           |
@@ -89,7 +89,7 @@ Current registry status:
 ### Python
 
 ```bash
-pip install -e clients/python
+pip install chefu-academy
 ```
 
 ```python
