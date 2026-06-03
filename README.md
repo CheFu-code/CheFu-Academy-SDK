@@ -126,8 +126,8 @@ Authorization: Bearer chf_publicId_secret
 ```
 
 The non-JS client sources are maintained in this repo and shipped with the npm
-package. Go, NuGet, and RubyGems releases are available now; dedicated PyPI,
-Maven Central, and Packagist releases still require their registry setup.
+package. Go, NuGet, Packagist, and RubyGems releases are available now;
+dedicated PyPI and Maven Central releases still require their registry setup.
 
 You can also generate additional clients from the OpenAPI contract:
 

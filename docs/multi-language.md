@@ -71,8 +71,8 @@ GET /courses?limit=20&cursor=20
 ## Official Client Packages
 
 These clients are source-ready in this repo and ship in the npm package. npm,
-Go, NuGet, and RubyGems packages are available now; dedicated PyPI, Maven
-Central, and Packagist releases still require their registry setup.
+Go, NuGet, Packagist, and RubyGems packages are available now; dedicated PyPI
+and Maven Central releases still require their registry setup.
 
 Current registry status:
 
@@ -83,7 +83,7 @@ Current registry status:
 | Python                | `chefu-academy`                                             | Ready for PyPI credentials                        |
 | Java                  | `com.chefu:chefu-academy`                                   | Ready for Maven Central credentials/signing setup |
 | C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                                |
-| PHP                   | `chefu/academy`                                             | Ready for Packagist connection                    |
+| PHP                   | `chefu/academy@0.1.0`                                       | Published to Packagist                            |
 | Ruby                  | `chefu_academy@0.1.0`                                       | Published to RubyGems                             |
 
 ### Python

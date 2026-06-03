@@ -8,6 +8,7 @@ the TypeScript package.
 - npm: `chefu-academy-sdk@1.0.10`
 - Go module: `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0`
 - NuGet: `CheFu.Academy@0.1.0`
+- Packagist: `chefu/academy@0.1.0`
 - RubyGems: `chefu_academy@0.1.0`
 
 The Go client is published by Git tag, not by uploading to a package registry.
@@ -47,7 +48,7 @@ Set credentials as environment variables or CI secrets. Do not commit them.
 | NuGet         | `NUGET_API_KEY`                                                   |
 | RubyGems      | `RUBYGEMS_API_KEY`                                                |
 | Maven Central | Central/Sonatype username, token, GPG private key, GPG passphrase |
-| Packagist     | Packagist username/token and a package/repo connection            |
+| Packagist     | `PACKAGIST_USERNAME`, `PACKAGIST_TOKEN`, and the GitHub hook      |
 
 ## PyPI
 
@@ -156,3 +157,27 @@ Install after publish:
 ```bash
 composer require chefu/academy
 ```
+
+### Auto Updates
+
+Packagist recommends enabling the GitHub service hook so the package updates
+immediately whenever code or tags are pushed. There are two supported paths:
+
+1. Log in to Packagist with GitHub, ensure the Packagist GitHub app has access
+   to `CheFu-code/CheFu-Academy-SDK`, then run Packagist account sync.
+2. Add the webhook manually in GitHub repository settings.
+
+Manual GitHub webhook values:
+
+```text
+Payload URL: https://packagist.org/api/github?username=PACKAGIST_USERNAME
+Content type: application/json
+Secret: PACKAGIST_TOKEN
+Events: push
+```
+
+This repo also includes `.github/workflows/update-packagist.yml`, which calls
+the Packagist update API on `main` pushes and `v*` tag pushes when
+`PACKAGIST_USERNAME` and `PACKAGIST_TOKEN` are configured as GitHub Actions
+secrets. That workflow keeps the package updated even if the Packagist UI still
+asks for a GitHub service hook.

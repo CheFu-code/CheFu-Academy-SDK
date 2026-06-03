@@ -1,0 +1,39 @@
+name: Update Packagist
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  update-packagist:
+    name: Notify Packagist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update chefu/academy
+        env:
+          PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+          PACKAGIST_REPOSITORY: https://github.com/CheFu-code/CheFu-Academy-SDK
+        run: |
+          if [ -z "$PACKAGIST_USERNAME" ] || [ -z "$PACKAGIST_TOKEN" ]; then
+            echo "::warning::PACKAGIST_USERNAME and PACKAGIST_TOKEN are required to notify Packagist."
+            exit 0
+          fi
+
+          curl --fail --show-error --silent \
+            --request POST \
+            --header "Content-Type: application/json" \
+            --header "Authorization: Bearer ${PACKAGIST_USERNAME}:${PACKAGIST_TOKEN}" \
+            --data "{\"repository\":\"${PACKAGIST_REPOSITORY}\"}" \
+            https://packagist.org/api/update-package
