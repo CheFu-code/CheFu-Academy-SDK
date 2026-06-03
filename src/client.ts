@@ -147,10 +147,47 @@ export class CheFuAcademyClient {
         return data.error;
     }
 
+    private isSensitiveKey(key: string): boolean {
+        const normalized = key.toLowerCase();
+        return [
+            'password',
+            'pass',
+            'pwd',
+            'token',
+            'idtoken',
+            'refreshtoken',
+            'authtoken',
+            'apikey',
+            'authorization',
+            'secret',
+        ].includes(normalized);
+    }
+
+    private redactSensitiveData(value: unknown): unknown {
+        if (Array.isArray(value)) {
+            return value.map((item) => this.redactSensitiveData(item));
+        }
+
+        if (value && typeof value === 'object') {
+            const redacted: Record<string, unknown> = {};
+            for (const [key, nestedValue] of Object.entries(
+                value as Record<string, unknown>,
+            )) {
+                redacted[key] = this.isSensitiveKey(key)
+                    ? '[REDACTED]'
+                    : this.redactSensitiveData(nestedValue);
+            }
+            return redacted;
+        }
+
+        return value;
+    }
+
     private logRequest(method: string, url: string, data?: unknown) {
         if (process.env.CHEFU_SDK_DEBUG === 'true') {
+            const safeData = data === undefined ? '' : this.redactSensitiveData(data);
             // eslint-disable-next-line no-console
-            console.log(`[CheFu SDK] ${method.toUpperCase()} ${url}`, data ?? '');
+            console.log(`[CheFu SDK] ${method.toUpperCase()} ${url}`, safeData);
         }
     }
 
