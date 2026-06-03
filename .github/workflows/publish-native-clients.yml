@@ -1,0 +1,86 @@
+name: Publish Native Clients
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_nuget:
+        description: Publish the C#/.NET client to NuGet
+        required: true
+        type: boolean
+        default: true
+      publish_rubygems:
+        description: Publish the Ruby client to RubyGems
+        required: true
+        type: boolean
+        default: true
+  push:
+    tags:
+      - "clients/csharp/v*"
+      - "clients/ruby/v*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish-nuget:
+    name: Publish NuGet package
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' && inputs.publish_nuget) ||
+        startsWith(github.ref, 'refs/tags/clients/csharp/v')
+      }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore clients/csharp/CheFu.Academy/CheFu.Academy.csproj
+
+      - name: Pack
+        run: dotnet pack clients/csharp/CheFu.Academy/CheFu.Academy.csproj --configuration Release --no-restore --output artifacts/nuget
+
+      - name: Publish to NuGet
+        run: |
+          for package in artifacts/nuget/*.nupkg; do
+            dotnet nuget push "$package" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+  publish-rubygems:
+    name: Publish RubyGem
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' && inputs.publish_rubygems) ||
+        startsWith(github.ref, 'refs/tags/clients/ruby/v')
+      }}
+    defaults:
+      run:
+        working-directory: clients/ruby
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Build gem
+        run: gem build chefu_academy.gemspec
+
+      - name: Publish to RubyGems
+        run: gem push chefu_academy-*.gem
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}

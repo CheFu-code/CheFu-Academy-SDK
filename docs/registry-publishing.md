@@ -26,26 +26,26 @@ curl https://proxy.golang.org/github.com/!che!fu-code/chefu-academy-sdk/clients/
 
 These names were checked as available before first release:
 
-| Registry | Package |
-| --- | --- |
-| PyPI | `chefu-academy` |
+| Registry      | Package                   |
+| ------------- | ------------------------- |
+| PyPI          | `chefu-academy`           |
 | Maven Central | `com.chefu:chefu-academy` |
-| NuGet | `CheFu.Academy` |
-| Packagist | `chefu/academy` |
-| RubyGems | `chefu_academy` |
+| NuGet         | `CheFu.Academy`           |
+| Packagist     | `chefu/academy`           |
+| RubyGems      | `chefu_academy`           |
 
 ## Required Credentials
 
 Set credentials as environment variables or CI secrets. Do not commit them.
 
-| Registry | Required secret |
-| --- | --- |
-| npm | `NPM_TOKEN` |
-| PyPI | `PYPI_API_TOKEN` |
-| NuGet | `NUGET_API_KEY` |
-| RubyGems | `RUBYGEMS_API_KEY` |
+| Registry      | Required secret                                                   |
+| ------------- | ----------------------------------------------------------------- |
+| npm           | `NPM_TOKEN`                                                       |
+| PyPI          | `PYPI_API_TOKEN`                                                  |
+| NuGet         | `NUGET_API_KEY`                                                   |
+| RubyGems      | `RUBYGEMS_API_KEY`                                                |
 | Maven Central | Central/Sonatype username, token, GPG private key, GPG passphrase |
-| Packagist | Packagist username/token and a package/repo connection |
+| Packagist     | Packagist username/token and a package/repo connection            |
 
 ## PyPI
 
@@ -67,7 +67,9 @@ pip install chefu-academy
 
 ## NuGet
 
-Requires the .NET SDK and `NUGET_API_KEY`.
+Requires the .NET SDK and `NUGET_API_KEY`. GitHub Actions publishes the package
+when the `clients/csharp/v0.1.0` tag is pushed, or when the
+`Publish Native Clients` workflow is run manually with NuGet enabled.
 
 ```bash
 dotnet pack clients/csharp/CheFu.Academy/CheFu.Academy.csproj -c Release
@@ -84,7 +86,9 @@ dotnet add package CheFu.Academy
 
 ## RubyGems
 
-Requires Ruby, RubyGems, and `RUBYGEMS_API_KEY`.
+Requires Ruby, RubyGems, and `RUBYGEMS_API_KEY`. GitHub Actions publishes the
+gem when the `clients/ruby/v0.1.0` tag is pushed, or when the
+`Publish Native Clients` workflow is run manually with RubyGems enabled.
 
 ```bash
 cd clients/ruby

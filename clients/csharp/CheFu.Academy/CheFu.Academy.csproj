@@ -8,6 +8,9 @@
     <Authors>CheFu Inc</Authors>
     <Description>Official .NET client for the CheFu Academy API</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/CheFu-code/CheFu-Academy-SDK</PackageProjectUrl>
+    <PackageTags>chefu;academy;sdk;api-client;education</PackageTags>
     <RepositoryUrl>https://github.com/CheFu-code/CheFu-Academy-SDK</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 </Project>

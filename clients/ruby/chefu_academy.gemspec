@@ -8,4 +8,8 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb', 'README.md']
   spec.require_paths = ['lib']
   spec.homepage = 'https://github.com/CheFu-code/CheFu-Academy-SDK'
+  spec.metadata = {
+    'homepage_uri' => 'https://github.com/CheFu-code/CheFu-Academy-SDK',
+    'source_code_uri' => 'https://github.com/CheFu-code/CheFu-Academy-SDK/tree/main/clients/ruby'
+  }
 end
