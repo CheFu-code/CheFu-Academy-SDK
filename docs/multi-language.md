@@ -70,10 +70,22 @@ GET /courses?limit=20&cursor=20
 
 ## Official Client Packages
 
-These clients are source-ready in this repo. Publishing them to registries such
-as PyPI, Maven Central, NuGet, Packagist, RubyGems, and the Go module proxy
-requires release credentials and automation, but the maintained client source is
-now first-party.
+These clients are source-ready in this repo and ship in the npm package. The Go
+client is published through the repository tag `clients/go/v0.1.0`; dedicated
+PyPI, Maven Central, NuGet, Packagist, and RubyGems releases require official
+registry credentials.
+
+Current registry status:
+
+| Language | Package | Status |
+| --- | --- | --- |
+| JavaScript/TypeScript | `chefu-academy-sdk@1.0.10` | Published to npm |
+| Go | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy |
+| Python | `chefu-academy` | Ready for PyPI credentials |
+| Java | `com.chefu:chefu-academy` | Ready for Maven Central credentials/signing setup |
+| C#/.NET | `CheFu.Academy` | Ready for NuGet credentials |
+| PHP | `chefu/academy` | Ready for Packagist account/repo setup |
+| Ruby | `chefu_academy` | Ready for RubyGems credentials |
 
 ### Python
 
@@ -89,6 +101,10 @@ print(client.courses.list(limit=5))
 ```
 
 ### Go
+
+```bash
+go get github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0
+```
 
 ```go
 client := chefuacademy.NewClient(chefuacademy.Config{

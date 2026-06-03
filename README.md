@@ -129,9 +129,9 @@ Authorization: Bearer chf_publicId_secret
 ```
 
 The non-JS client sources are maintained in this repo and shipped with the npm
-package. Registry publishing for PyPI, Maven Central, NuGet, Packagist,
-RubyGems, and Go module distribution still requires release credentials and CI
-automation.
+package. The Go client is available from the pushed module tag, and dedicated
+PyPI, Maven Central, NuGet, Packagist, and RubyGems releases require official
+registry credentials.
 
 You can also generate additional clients from the OpenAPI contract:
 
@@ -143,7 +143,9 @@ npx @openapitools/openapi-generator-cli generate \
 ```
 
 See [docs/multi-language.md](docs/multi-language.md) for official client usage,
-generator commands, auth rules, pagination, and example usage.
+generator commands, auth rules, pagination, and example usage. See
+[docs/registry-publishing.md](docs/registry-publishing.md) for the release
+runbook.
 
 ---
 
