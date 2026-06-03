@@ -70,22 +70,21 @@ GET /courses?limit=20&cursor=20
 
 ## Official Client Packages
 
-These clients are source-ready in this repo and ship in the npm package. The Go
-client is published through the repository tag `clients/go/v0.1.0`; dedicated
-PyPI, Maven Central, NuGet, Packagist, and RubyGems releases require official
-registry credentials.
+These clients are source-ready in this repo and ship in the npm package. npm,
+Go, NuGet, and RubyGems packages are available now; dedicated PyPI, Maven
+Central, and Packagist releases still require their registry setup.
 
 Current registry status:
 
-| Language | Package | Status |
-| --- | --- | --- |
-| JavaScript/TypeScript | `chefu-academy-sdk@1.0.10` | Published to npm |
-| Go | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy |
-| Python | `chefu-academy` | Ready for PyPI credentials |
-| Java | `com.chefu:chefu-academy` | Ready for Maven Central credentials/signing setup |
-| C#/.NET | `CheFu.Academy` | Ready for NuGet credentials |
-| PHP | `chefu/academy` | Ready for Packagist account/repo setup |
-| Ruby | `chefu_academy` | Ready for RubyGems credentials |
+| Language              | Package                                                     | Status                                            |
+| --------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
+| JavaScript/TypeScript | `chefu-academy-sdk@1.0.10`                                  | Published to npm                                  |
+| Go                    | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy  |
+| Python                | `chefu-academy`                                             | Ready for PyPI credentials                        |
+| Java                  | `com.chefu:chefu-academy`                                   | Ready for Maven Central credentials/signing setup |
+| C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                                |
+| PHP                   | `chefu/academy`                                             | Ready for Packagist account/repo setup            |
+| Ruby                  | `chefu_academy@0.1.0`                                       | Published to RubyGems                             |
 
 ### Python
 
@@ -122,6 +121,10 @@ JsonNode courses = client.listCourses(Map.of("limit", 5));
 
 ### C#
 
+```bash
+dotnet add package CheFu.Academy --version 0.1.0
+```
+
 ```csharp
 var client = new CheFuAcademyClient(apiKey: "chf_publicId_secret");
 var courses = await client.ListCoursesAsync(new Dictionary<string, object?>
@@ -138,6 +141,10 @@ $courses = $client->listCourses(['limit' => 5]);
 ```
 
 ### Ruby
+
+```bash
+gem install chefu_academy -v 0.1.0
+```
 
 ```ruby
 client = CheFuAcademy::Client.new(api_key: 'chf_publicId_secret')

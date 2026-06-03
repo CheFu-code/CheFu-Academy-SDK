@@ -8,7 +8,6 @@ clients for Python, Go, Java, C#, PHP, Ruby, and cURL.
 
 ---
 
-
 ## Features
 
 - API key–based authentication
@@ -24,7 +23,6 @@ clients for Python, Go, Java, C#, PHP, Ruby, and cURL.
 - Ready for production & npm
 
 ---
-
 
 ## Installation
 
@@ -56,7 +54,6 @@ npx chefu-academy register
 ```
 
 ---
-
 
 ## Quick Start
 
@@ -129,9 +126,8 @@ Authorization: Bearer chf_publicId_secret
 ```
 
 The non-JS client sources are maintained in this repo and shipped with the npm
-package. The Go client is available from the pushed module tag, and dedicated
-PyPI, Maven Central, NuGet, Packagist, and RubyGems releases require official
-registry credentials.
+package. Go, NuGet, and RubyGems releases are available now; dedicated PyPI,
+Maven Central, and Packagist releases still require their registry setup.
 
 You can also generate additional clients from the OpenAPI contract:
 
@@ -148,7 +144,6 @@ generator commands, auth rules, pagination, and example usage. See
 runbook.
 
 ---
-
 
 ## Available APIs
 
@@ -244,7 +239,6 @@ are prompted interactively and are never accepted as command-line flags.
 
 ---
 
-
 ## Development
 
 ### Scripts
@@ -267,7 +261,6 @@ src/
 
 ---
 
-
 ## Example Project
 
 ```ts
@@ -281,14 +274,12 @@ console.log(courses);
 
 ---
 
-
 ## Requirements
 
 - Node.js 18+
 - TypeScript 5+ (optional but recommended)
 
 ---
-
 
 ## License
 

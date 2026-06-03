@@ -7,6 +7,8 @@ the TypeScript package.
 
 - npm: `chefu-academy-sdk@1.0.10`
 - Go module: `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0`
+- NuGet: `CheFu.Academy@0.1.0`
+- RubyGems: `chefu_academy@0.1.0`
 
 The Go client is published by Git tag, not by uploading to a package registry.
 For the module under `clients/go`, the tag format is:
