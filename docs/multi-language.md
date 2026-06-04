@@ -80,7 +80,7 @@ Current registry status:
 | --------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
 | JavaScript/TypeScript | `chefu-academy-sdk@1.0.10`                                  | Published to npm                                 |
 | Go                    | `github.com/CheFu-code/chefu-academy-sdk/clients/go@v0.1.0` | Published by Git tag and visible on the Go proxy |
-| Python                | `chefu-academy@0.1.0`                                       | Published to PyPI                                |
+| Python                | `chefu-academy@0.1.1`                                       | Ready for the next PyPI release                  |
 | Java                  | `com.chefuinc:chefu-academy:0.1.0`                          | Published to Maven Central                       |
 | C#/.NET               | `CheFu.Academy@0.1.0`                                       | Published to NuGet                               |
 | PHP                   | `chefu/academy@0.1.0`                                       | Published to Packagist                           |
@@ -90,6 +90,15 @@ Current registry status:
 
 ```bash
 pip install chefu-academy
+```
+
+For the Python terminal CLI:
+
+```bash
+pipx install chefu-academy
+chefu-academy login
+chefu-academy keys create --name "Local development"
+chefu-academy keys list
 ```
 
 ```python

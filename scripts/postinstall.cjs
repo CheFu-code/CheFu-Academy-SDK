@@ -15,7 +15,7 @@ function shouldSkip() {
 async function main() {
     if (shouldSkip()) {
         console.log(
-            'CheFu Academy SDK installed. Run "npx chefu-academy login" or "npx chefu-academy register" to set up an account.',
+            'CheFu Academy SDK installed. Run "chefu-academy login" or "chefu-academy register" to set up an account.',
         );
         return;
     }
@@ -29,5 +29,5 @@ main().catch((error) => {
 
     console.warn('CheFu Academy SDK account setup could not finish.');
     console.warn(message);
-    console.warn('Run "npx chefu-academy login" when you are ready.');
+    console.warn('Run "chefu-academy login" when you are ready.');
 });

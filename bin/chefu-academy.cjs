@@ -448,8 +448,8 @@ function friendlyHttpError(pathname, statusCode, serverMessage) {
         return new CheFuCliError(
             'We could not sign you in. The email or password looks incorrect.',
             [
-                'Check the email and password, then run "npx chefu-academy login" again.',
-                'If you do not have an account yet, run "npx chefu-academy register".',
+                'Check the email and password, then run "chefu-academy login" again.',
+                'If you do not have an account yet, run "chefu-academy register".',
             ],
         );
     }
@@ -458,7 +458,7 @@ function friendlyHttpError(pathname, statusCode, serverMessage) {
         return new CheFuCliError(
             'Your CheFu Academy login session cannot manage API keys yet.',
             [
-                'Run "npx chefu-academy logout", then run "npx chefu-academy login" again.',
+                'Run "chefu-academy logout", then run "chefu-academy login" again.',
                 'If this keeps happening, the CheFu API needs the latest auth refresh deployment.',
             ],
             401,
@@ -467,7 +467,7 @@ function friendlyHttpError(pathname, statusCode, serverMessage) {
 
     if (statusCode === 409 && isRegister) {
         return new CheFuCliError('That email already has a CheFu Academy account.', [
-            'Run "npx chefu-academy login" instead.',
+            'Run "chefu-academy login" instead.',
             'Use a different email if you want to create a new account.',
         ]);
     }
@@ -590,7 +590,7 @@ function sessionExpiresSoon(session) {
 async function refreshSession(session) {
     if (!session?.refreshToken) {
         throw new CheFuCliError('Your CheFu Academy login session has expired.', [
-            'Run "npx chefu-academy login" again.',
+            'Run "chefu-academy login" again.',
         ]);
     }
 
@@ -614,7 +614,7 @@ async function requireSession() {
 
     if (!session?.token && !session?.idToken) {
         throw new CheFuCliError('You are not logged in to CheFu Academy.', [
-            'Run "npx chefu-academy login" first.',
+            'Run "chefu-academy login" first.',
         ]);
     }
 
@@ -625,8 +625,8 @@ async function requireSession() {
             throw new CheFuCliError(
                 'Your saved CheFu Academy session is from an older login format.',
                 [
-                    'Run "npx chefu-academy logout".',
-                    'Run "npx chefu-academy login" again after the latest backend is deployed.',
+                    'Run "chefu-academy logout".',
+                    'Run "chefu-academy login" again after the latest backend is deployed.',
                 ],
             );
         }
@@ -757,7 +757,7 @@ async function listKeys() {
 
     if (!Array.isArray(keys) || keys.length === 0) {
         printWarning('No API keys found.', [
-            'Create one with: npx chefu-academy keys create --name "Local development"',
+            'Create one with: chefu-academy keys create --name "Local development"',
         ]);
         return;
     }
@@ -776,8 +776,8 @@ async function listKeys() {
 async function revokeKey(keyId, argv = []) {
     if (!keyId) {
         throw new CheFuCliError('API key ID is required.', [
-            'Run "npx chefu-academy keys list" to find the key ID.',
-            'Then run "npx chefu-academy keys revoke <keyId>".',
+            'Run "chefu-academy keys list" to find the key ID.',
+            'Then run "chefu-academy keys revoke <keyId>".',
         ]);
     }
 
@@ -855,7 +855,7 @@ async function runOnboarding({ source = 'cli' } = {}) {
 
     writeLine(
         source === 'postinstall'
-            ? color('Skipped. Run "npx chefu-academy login" when you are ready.', 'dim')
+            ? color('Skipped. Run "chefu-academy login" when you are ready.', 'dim')
             : color('Skipped.', 'dim'),
     );
 }
@@ -898,7 +898,7 @@ async function run(argv = process.argv.slice(2)) {
             ]);
         } else {
             printWarning('Not logged in.', [
-                'Run: npx chefu-academy login',
+                'Run: chefu-academy login',
             ]);
         }
         return;

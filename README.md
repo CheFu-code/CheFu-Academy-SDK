@@ -49,8 +49,8 @@ CHEFU_SDK_SKIP_AUTH=1 npm install chefu-academy-sdk
 To run setup later:
 
 ```bash
-npx chefu-academy login
-npx chefu-academy register
+npx --package chefu-academy-sdk chefu-academy login
+npx --package chefu-academy-sdk chefu-academy register
 ```
 
 ---
@@ -216,11 +216,20 @@ console.log(`Logged in as ${session.user.email}`);
 
 `loginWithTerminal()` masks password input when running in an interactive TTY.
 
-The installed CLI uses the same auth endpoints:
+The installed Node CLI uses the same auth endpoints:
 
 ```bash
 chefu-academy login
 chefu-academy register
+chefu-academy whoami
+chefu-academy logout
+```
+
+Python users can install the matching CLI from PyPI:
+
+```bash
+pipx install chefu-academy
+chefu-academy login
 chefu-academy whoami
 chefu-academy logout
 ```

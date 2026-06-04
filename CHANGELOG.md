@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- Added a Python `chefu-academy` CLI with login, registration, session, and API key management commands.
+
 ## [1.0.10] - 2026-06-03
 
 ### Added

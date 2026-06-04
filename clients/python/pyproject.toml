@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chefu-academy"
-version = "0.1.0"
+version = "0.1.1"
 description = "Official Python client for the CheFu Academy API"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -22,3 +22,6 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/CheFu-code/CheFu-Academy-SDK"
 Repository = "https://github.com/CheFu-code/CheFu-Academy-SDK"
+
+[project.scripts]
+chefu-academy = "chefu_academy.cli:main"

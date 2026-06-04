@@ -4,6 +4,25 @@ Official Python source client for the CheFu Academy API.
 
 ## Usage
 
+### CLI
+
+```bash
+pipx install chefu-academy
+chefu-academy login
+chefu-academy keys create --name "Local development"
+chefu-academy keys list
+chefu-academy keys revoke <key-id>
+```
+
+If you install inside a virtual environment, use:
+
+```bash
+pip install chefu-academy
+chefu-academy auth
+```
+
+### Client
+
 ```python
 from chefu_academy import CheFuAcademy
 
