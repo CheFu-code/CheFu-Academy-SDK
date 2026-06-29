@@ -60,7 +60,7 @@
         "education"
     ],
     "devDependencies": {
-        "@types/node": "^25.0.10",
+        "@types/node": "^26.0.1",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3"
     },
